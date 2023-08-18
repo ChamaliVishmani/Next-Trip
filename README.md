@@ -11,4 +11,5 @@ flask run
 
 # run frontend
 
+npm install
 npm start
