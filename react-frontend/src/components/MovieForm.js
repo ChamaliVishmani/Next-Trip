@@ -45,6 +45,24 @@ export const MovieForm = ({ onNewMovie }) => {
           submit
         </Button>
       </Form.Field>
+      <Form.Field>
+        <Button
+          onClick={() => {
+            var today = new Date();
+            var date =
+              today.getFullYear() +
+              "_" +
+              (today.getMonth() + 1) +
+              "_" +
+              today.getDate();
+            var time = today.getHours() + "_" + today.getMinutes();
+            var dateTime = date + "_" + time;
+            console.log(dateTime);
+          }}
+        >
+          get Current Date Time
+        </Button>
+      </Form.Field>
     </Form>
   );
 };
