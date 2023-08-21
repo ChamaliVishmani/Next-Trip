@@ -1,7 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import joblib
 
 db = SQLAlchemy()
+latitude_model = joblib.load("./models/lat_model.pkl")
+logitude_model = joblib.load("./models/lon_model.pkl")
 
 
 def create_app():
