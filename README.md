@@ -4,6 +4,8 @@ uni sem 06 project
 
 # run backend
 
+(in a command prompt)
+
 cd flask-backend
 
 env\Scripts\activate
