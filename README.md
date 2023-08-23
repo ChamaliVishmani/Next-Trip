@@ -1,4 +1,4 @@
-# uberDataApp
+# Next Trip
 
 uni sem 06 project
 
