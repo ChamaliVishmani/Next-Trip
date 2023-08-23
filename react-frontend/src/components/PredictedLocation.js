@@ -11,6 +11,9 @@ import {
 import { apiKey } from "../keys";
 import axios from "axios";
 
+//todo : start journey when go to maps-> add new entry to db -> on cancel , remove new entry
+// update model every 1 hour
+
 export const PredictedLocation = () => {
   const [predictedLan, setPredictedLan] = useState(0);
   const [predictedLon, setPredictedLon] = useState(0);
