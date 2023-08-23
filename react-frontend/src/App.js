@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import "./App.css";
-import { Movies } from "./components/Movies";
-import { MovieForm } from "./components/MovieForm";
+// import { Movies } from "./components/Movies";
+// import { MovieForm } from "./components/MovieForm";
 import { Container } from "semantic-ui-react";
 import { PredictedLocation } from "./components/PredictedLocation";
+import { Helmet } from "react-helmet";
 
 function App() {
-  const [movies, setMovies] = useState([]);
+  // const [movies, setMovies] = useState([]);
   // const [predictedLan, setPredictedLan] = useState(0);
 
   // const getLocation = async () => {
@@ -39,14 +40,14 @@ function App() {
   //   console.log("predictedLan :", predictedLan);
   // };
 
-  useEffect(() => {
-    fetch("/movies").then((response) =>
-      response.json().then((data) => {
-        setMovies(data.movies);
-      })
-    );
-    // GetLocation();
-  }, []);
+  // useEffect(() => {
+  //   fetch("/movies").then((response) =>
+  //     response.json().then((data) => {
+  //       setMovies(data.movies);
+  //     })
+  //   );
+  //   // GetLocation();
+  // }, []);
 
   // useEffect(() => {
   //   var today = new Date();
@@ -93,6 +94,9 @@ function App() {
 
   return (
     <Container style={{ marginTop: 40 }}>
+      <Helmet>
+        <title>Next Trip</title>
+      </Helmet>
       {/* <MovieForm
         onNewMovie={(movie) =>
           setMovies((currentMovies) => [movie, ...currentMovies])
