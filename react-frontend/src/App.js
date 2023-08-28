@@ -13,6 +13,9 @@ import Login from "./components/Login/Login";
 import useToken from "./useToken";
 
 function App() {
+  const dbConnect = require("./db/dbConnect");
+  dbConnect();
+
   const { token, setToken } = useToken();
 
   if (!token) {
