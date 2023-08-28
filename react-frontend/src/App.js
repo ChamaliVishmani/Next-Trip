@@ -13,7 +13,6 @@ import Login from "./components/Login/Login";
 import useToken from "./useToken";
 
 function App() {
-  //test
   const { token, setToken } = useToken();
 
   if (!token) {

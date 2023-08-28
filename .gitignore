@@ -1,4 +1,5 @@
 react-frontend/node_modules
 react-frontend/src/keys.js
+react-frontend/.env
 flask-backend/data
 flask-backend/env
