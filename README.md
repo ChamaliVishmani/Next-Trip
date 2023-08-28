@@ -10,11 +10,15 @@ cd flask-backend
 
 env\Scripts\activate
 
+pip install -r requirements.txt
+
 set FLASK_APP=api
 
 set FLASK_DEBUG=1
 
 flask run
+
+---
 
 # run frontend
 
@@ -23,3 +27,7 @@ cd react-frontend
 npm install
 
 npm start
+
+# start server
+
+node server.js

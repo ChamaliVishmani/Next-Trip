@@ -1,12 +1,23 @@
 // import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import { Movies } from "./components/Movies";
 // import { MovieForm } from "./components/MovieForm";
 import { Container } from "semantic-ui-react";
 import { PredictedLocation } from "./components/PredictedLocation";
 import { Helmet } from "react-helmet";
+import Dashboard from "./components/Dashboard";
+import Preferences from "./components/Preferences";
+import Login from "./components/Login/Login";
+import useToken from "./useToken";
 
 function App() {
+  const { token, setToken } = useToken();
+
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
   // const [movies, setMovies] = useState([]);
   // const [predictedLan, setPredictedLan] = useState(0);
 
@@ -93,19 +104,30 @@ function App() {
   //           }
 
   return (
-    <Container style={{ marginTop: 40 }}>
-      <Helmet>
-        <title>Next Trip</title>
-      </Helmet>
-      {/* <MovieForm
-        onNewMovie={(movie) =>
-          setMovies((currentMovies) => [movie, ...currentMovies])
-        }
-      /> */}
-      {/* <Movies movies={movies} /> */}
-      <PredictedLocation />
-      {/* <GetLocation /> */}
-    </Container>
+    // <Container style={{ marginTop: 40 }}>
+    //   <Helmet>
+    //     <title>Next Trip</title>
+    //   </Helmet>
+    //   {/* <MovieForm
+    //     onNewMovie={(movie) =>
+    //       setMovies((currentMovies) => [movie, ...currentMovies])
+    //     }
+    //   /> */}
+    //   {/* <Movies movies={movies} /> */}
+    //   <PredictedLocation />
+    //   {/* <GetLocation /> */}
+    // </Container>
+
+    <div className="wrapper">
+      <h1>Application</h1>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/preferences" element={<Preferences />} />
+          <Route path="/predict_location" element={<PredictedLocation />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
