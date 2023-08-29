@@ -5,12 +5,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import { Movies } from "./components/Movies";
 // import { MovieForm } from "./components/MovieForm";
 import { Container } from "semantic-ui-react";
-import { PredictedLocation } from "./components/PredictedLocation";
+import { PredictedLocation } from "./components/PredictedLocation.js";
 import { Helmet } from "react-helmet";
-import Dashboard from "./components/Dashboard";
-import Preferences from "./components/Preferences";
-import Login from "./components/Login/Login";
-import useToken from "./useToken";
+import Dashboard from "./components/Dashboard.js";
+import Preferences from "./components/Preferences.js";
+import Login from "./components/Login/Login.js";
+import useToken from "./useToken.js";
 
 function App() {
   const { token, setToken } = useToken();

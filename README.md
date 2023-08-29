@@ -31,3 +31,5 @@ npm start
 # start server
 
 node server.js
+
+next -> connect the submit form with the db configs

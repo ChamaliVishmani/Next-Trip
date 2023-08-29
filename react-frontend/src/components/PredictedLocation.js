@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Icon, Label, Container } from "semantic-ui-react";
-import { apiKey } from "../keys";
+import { apiKey } from "../keys.js";
 import axios from "axios";
 
 //todo : start journey when go to maps-> add new entry to db -> on cancel , remove new entry
