@@ -61,21 +61,49 @@ export const PredictedLocation = () => {
     var hour = today.getHours();
     const dateTime = { weekday, hour };
 
-    await fetch("/predict_location", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dateTime),
-    }).then((response) =>
-      response.json().then((data) => {
-        setPredictedLan(data.predicted_lat[0]);
-        setPredictedLon(data.predicted_lon[0]);
-      })
-    );
+    try {
+      const apiUrl = `http://localhost:5000/predict_location`; //THIS IS ACTUALLY SIGNUP
 
-    fetchPredictedDestinationAddress();
+      const response = await axios
+        .post(apiUrl, JSON.stringify(dateTime), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          response.json().then((data) => {
+            setPredictedLan(data.predicted_lat[0]);
+            setPredictedLon(data.predicted_lon[0]);
+          });
+        });
+
+      fetchPredictedDestinationAddress();
+
+      console.log("res :", response);
+    } catch (error) {
+      console.log("err :", error);
+    }
   };
+
+  // const predictDestination = async () => {
+  //   var today = new Date();
+  //   var weekday = today.getDay();
+  //   var hour = today.getHours();
+  //   const dateTime = { weekday, hour };
+
+  //   await fetch("/predict_location", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(dateTime),
+  //   }).then((response) =>
+  //     response.json().then((data) => {
+  //       setPredictedLan(data.predicted_lat[0]);
+  //       setPredictedLon(data.predicted_lon[0]);
+  //     })
+  //   );
+
+  //   fetchPredictedDestinationAddress();
+  // };
 
   useEffect(() => {
     predictDestination();

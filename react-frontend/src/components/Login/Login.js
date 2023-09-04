@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "./Login.css";
+import axios from "axios";
 // import { userSignUp } from "../../types/types";
 
 // class user {
@@ -11,16 +12,29 @@ import "./Login.css";
 //     this.roles = roles;
 //   }
 // }
+const loginUser = async (credentials) => {
+  try {
+    const apiUrl = `http://localhost:8080/api/auth/signup`; //THIS IS ACTUALLY SIGNUP
 
-async function loginUser(credentials) {
-  return await fetch("/api/auth/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-}
+    const response = await axios.post(apiUrl, JSON.stringify(credentials), {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    console.log("res :", response);
+  } catch (error) {
+    console.log("err :", error);
+  }
+};
+
+// async function loginUser(credentials) {
+//   return await fetch("/api/auth/signup", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(credentials),
+//   }).then((data) => data.json());
+// }
 
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
