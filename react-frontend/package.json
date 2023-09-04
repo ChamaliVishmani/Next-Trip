@@ -37,7 +37,7 @@
       "react-app/jest"
     ]
   },
-  "proxy": "http://127.0.0.1:5000",
+  "proxy": "http://localhost:8080",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -52,7 +52,8 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
   },
   "type": "module"
 }

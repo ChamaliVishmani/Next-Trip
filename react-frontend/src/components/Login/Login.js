@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "./Login.css";
+// import { userSignUp } from "../../types/types";
+
+// class user {
+//   constructor(username, email, password, roles) {
+//     this.username = username;
+//     this.email = email;
+//     this.password = password;
+//     this.roles = roles;
+//   }
+// }
 
 async function loginUser(credentials) {
-  return fetch("http://localhost:8080/login", {
+  return await fetch("/api/auth/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,12 +25,22 @@ async function loginUser(credentials) {
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [email, setEmail] = useState();
+  const [role, setRole] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // const credentials = {
+    //   username: username,
+    //   email: email,
+    //   password: password,
+    //   roles: [role],
+    // };
     const token = await loginUser({
       username,
+      email,
       password,
+      role,
     });
     setToken(token);
   };
@@ -39,6 +59,14 @@ export default function Login({ setToken }) {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
+        </label>
+        <label>
+          <p>Email</p>
+          <input type="email" onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <label>
+          <p>Type : user, moderator or admin</p>
+          <input type="text" onChange={(e) => setRole(e.target.value)} />
         </label>
         <div>
           <button type="submit">Submit</button>
