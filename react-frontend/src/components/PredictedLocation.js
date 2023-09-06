@@ -62,22 +62,23 @@ export const PredictedLocation = () => {
     const dateTime = { weekday, hour };
 
     try {
-      const apiUrl = `http://localhost:5000/predict_location`; //THIS IS ACTUALLY SIGNUP
+      const apiUrl = `http://localhost:5000/predict_location`;
 
       const response = await axios
         .post(apiUrl, JSON.stringify(dateTime), {
           headers: { "Content-Type": "application/json" },
         })
         .then((response) => {
-          response.json().then((data) => {
-            setPredictedLan(data.predicted_lat[0]);
-            setPredictedLon(data.predicted_lon[0]);
-          });
+          // response.json().then((data) => {
+          //   setPredictedLan(data.predicted_lat[0]);
+          //   setPredictedLon(data.predicted_lon[0]);
+          // });
+
+          setPredictedLan(response.data.predicted_lat);
+          setPredictedLon(response.data.predicted_lon);
         });
 
       fetchPredictedDestinationAddress();
-
-      console.log("res :", response);
     } catch (error) {
       console.log("err :", error);
     }
