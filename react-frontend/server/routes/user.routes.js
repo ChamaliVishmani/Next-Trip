@@ -6,7 +6,7 @@ import {
   userBoard,
   moderatorBoard,
   adminBoard,
-} from "../config/controllers/user.controller.js";
+} from "../controllers/user.controller.js";
 
 export default function setupUserRoutes(app) {
   app.use(function (req, res, next) {

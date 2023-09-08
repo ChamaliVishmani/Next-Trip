@@ -1,5 +1,8 @@
 react-frontend/client/next_trip/node_modules
+react-frontend/client/next_trip/src/keys.js
+
 react-frontend/server/node_modules
+react-frontend/server/config
 
 flask-backend/data
 flask-backend/env

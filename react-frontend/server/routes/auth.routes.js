@@ -1,5 +1,5 @@
 import verifySignUp from "../middleware/verifySignUp.js";
-import { signup, signin } from "../config/controllers/auth.controller.js";
+import { signup, signin } from "../controllers/auth.controller.js";
 
 export default function setupAuthRoutes(app) {
   app.use(function (req, res, next) {

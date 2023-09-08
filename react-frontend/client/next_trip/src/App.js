@@ -137,6 +137,15 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route
+              path=""
+              element={
+                <Login
+                  setUserLoggedIn={setUserLoggedIn}
+                  setUserType={setUserType}
+                />
+              }
+            />
+            <Route
               path="/login"
               element={
                 <Login
