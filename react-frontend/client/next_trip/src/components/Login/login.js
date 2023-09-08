@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 
 import "./login.css";
 import { loginUser } from "../../components/utils/loginApi.js";
-import { getUserContent } from "../utils/userContent.js";
+import { authenticateDriver } from "../utils/userContent.js";
 import SignUp from "../SignUp/signUp";
 import { useNavigate } from "react-router-dom";
 
@@ -55,13 +55,18 @@ export default function Login({ setUserLoggedIn, setUserType }) {
         setAccessToken,
         enqueueSnackbar
       );
-      console.log("handleSubmit ", accessToken);
-      const userType = await getUserContent(accessToken);
-
-      setUserType(userType);
-      switch (userType) {
-        case "Driver":
-          navigate("/predict_location");
+      console.log("handleSubmit role ", role);
+      // const userType = setUserType(userType);
+      switch (role) {
+        case "ROLE_MODERATOR":
+          try {
+            await authenticateDriver(accessToken);
+            navigate("/predict_location");
+          } catch (error) {
+            enqueueSnackbar("Failed to authenticate driver", {
+              variant: "error",
+            });
+          }
       }
     } catch (error) {
       console.log("error :", error);

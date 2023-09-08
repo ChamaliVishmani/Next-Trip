@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getUserContent(accessToken) {
+export async function authenticateDriver(accessToken) {
   try {
     console.log("accessToken1 ", accessToken);
     const apiUrl = `http://localhost:8080/api/driver`;

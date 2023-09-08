@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUserContent } from "./userContent.js";
+import { authenticateDriver } from "./userContent.js";
 
 async function setElement(array, component, enqueueSnackbar) {
   const componentIndex = array.findIndex((element) =>

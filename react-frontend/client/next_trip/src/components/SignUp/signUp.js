@@ -4,7 +4,7 @@ import "./signUp.css";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-export default function SignUp({ setUserRegistered }) {
+export default function SignUp({ setUserSignedUp }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export default function SignUp({ setUserRegistered }) {
       });
 
       enqueueSnackbar(response.data.message, { variant: "success" });
-      setUserRegistered(true);
+      setUserSignedUp(true);
     } catch (error) {
       enqueueSnackbar(
         error.response.data.message ||
