@@ -12,10 +12,14 @@ import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import useToken from "./useToken.js";
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import Login from "./components/Login/login.js";
 
 function App() {
   // const { token, setToken } = useToken();
   const [userRegistered, setUserRegistered] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [role, setRole] = useState();
+  const [accessToken, setAccessToken] = useState("");
 
   if (!userRegistered) {
     return (
@@ -116,9 +120,16 @@ function App() {
       <Helmet>
         <title>Next Trip</title>
       </Helmet>
-      <PredictedLocation />
+      {/* <PredictedLocation /> */}
+      <SnackbarProvider maxSnack={3}>
+        <Login
+          setUserLoggedIn={setUserLoggedIn}
+          setRole={setRole}
+          setAccessToken={setAccessToken}
+        />
+        ;
+      </SnackbarProvider>
     </Container>
-
     // <div className="wrapper">
     //   <h1>Application</h1>
     //   <BrowserRouter>
