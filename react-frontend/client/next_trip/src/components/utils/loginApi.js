@@ -1,16 +1,18 @@
 import axios from "axios";
+import { getUserContent } from "./userContent.js";
 
-function setElement(array, component, setComponent, enqueueSnackbar) {
+async function setElement(array, component, enqueueSnackbar) {
   const componentIndex = array.findIndex((element) =>
     element.includes(component)
   );
   if (componentIndex !== -1 && componentIndex < array.length - 2) {
     const elementContent = array[componentIndex + 2].trim();
-    setComponent(elementContent);
+    return elementContent;
   } else {
     enqueueSnackbar("No " + component + " found for user", {
       variant: "warning",
     });
+    return "";
   }
 }
 
@@ -28,19 +30,35 @@ export async function loginUser(
       headers: { "Content-Type": "application/json" },
     });
 
-    enqueueSnackbar("Logged in successfully", { variant: "success" });
-
     const responseComponents = JSON.stringify(response).split('"');
 
-    setElement(responseComponents, "roles", setRole, enqueueSnackbar);
-    setElement(
+    const rolePromise = setElement(
+      responseComponents,
+      "roles",
+      setRole,
+      enqueueSnackbar
+    );
+
+    const accessTokenPromise = setElement(
       responseComponents,
       "accessToken",
       setAccessToken,
       enqueueSnackbar
     );
 
+    const [role, accessToken] = await Promise.all([
+      rolePromise,
+      accessTokenPromise,
+    ]);
+
+    setRole(role);
+    setAccessToken(accessToken);
+
     setUserLoggedIn(true);
+
+    enqueueSnackbar("Logged in successfully", { variant: "success" });
+    getUserContent(accessToken);
+    // console.log("accessToken ", accessToken);
   } catch (error) {
     enqueueSnackbar(
       error.response?.data?.message || "An error occurred while login user",

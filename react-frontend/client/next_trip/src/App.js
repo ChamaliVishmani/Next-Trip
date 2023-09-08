@@ -10,13 +10,13 @@ import { Helmet } from "react-helmet";
 import Dashboard from "./components/Dashboard.js";
 import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
-import useToken from "./useToken.js";
+// import useToken from "./useToken.js";
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
 import Login from "./components/Login/login.js";
 
 function App() {
   // const { token, setToken } = useToken();
-  const [userRegistered, setUserRegistered] = useState(true);
+  const [userRegistered, setUserRegistered] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [role, setRole] = useState();
   const [accessToken, setAccessToken] = useState("");

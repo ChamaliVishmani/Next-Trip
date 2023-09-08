@@ -1,9 +1,9 @@
-import { DB_URL } from "./src/config/db.config.js";
+import { DB_URL } from "./config/db.config.js";
 import express, { json, urlencoded } from "express";
 import cors from "cors";
-import db from "./src/models/index.js";
-import setupAuthRoutes from "./src/routes/auth.routes.js";
-import setupUserRoutes from "./src/routes/user.routes.js";
+import db from "./models/index.js";
+import setupAuthRoutes from "./routes/auth.routes.js";
+import setupUserRoutes from "./routes/user.routes.js";
 
 const app = express();
 

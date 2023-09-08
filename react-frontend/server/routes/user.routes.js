@@ -1,10 +1,12 @@
+// import { Route, Redirect } from "react-router-dom";
+
 import authJwt from "../middleware/authJwt.js";
 import {
   allAccess,
   userBoard,
   moderatorBoard,
   adminBoard,
-} from "../controllers/user.controller.js";
+} from "../config/controllers/user.controller.js";
 
 export default function setupUserRoutes(app) {
   app.use(function (req, res, next) {
@@ -15,18 +17,18 @@ export default function setupUserRoutes(app) {
     next();
   });
 
-  app.get("/api/test/all", allAccess);
+  app.get("/api/login", allAccess);
 
-  app.get("/api/test/user", [authJwt.verifyToken], userBoard);
+  app.get("/api/driverBasic", [authJwt.verifyToken], userBoard);
 
   app.get(
-    "/api/test/mod",
+    "/api/rider",
     [authJwt.verifyToken, authJwt.isModerator],
     moderatorBoard
   );
 
   app.get(
-    "/api/test/admin",
+    "/api/driverAdvanced",
     [authJwt.verifyToken, authJwt.isAdmin],
     adminBoard
   );

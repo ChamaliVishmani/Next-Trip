@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useSnackbar } from "notistack";
 
 import "./login.css";
-import { loginUser } from "../utils/loginApi.js";
+import { loginUser } from "../../components/utils/loginApi.js";
 
 export default function Login({ setUserLoggedIn, setRole, setAccessToken }) {
   const [userName, setUserName] = useState("");
@@ -33,17 +33,20 @@ export default function Login({ setUserLoggedIn, setRole, setAccessToken }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    await loginUser(
-      {
-        userName,
-        password,
-      },
-      setUserLoggedIn,
-      setRole,
-      setAccessToken,
-      enqueueSnackbar
-    );
+    try {
+      await loginUser(
+        {
+          userName,
+          password,
+        },
+        setUserLoggedIn,
+        setRole,
+        setAccessToken,
+        enqueueSnackbar
+      );
+    } catch (error) {
+      console.log("error :", error);
+    }
   };
 
   return (

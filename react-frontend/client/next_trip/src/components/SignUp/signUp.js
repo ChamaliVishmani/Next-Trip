@@ -5,7 +5,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 
 export default function SignUp({ setUserRegistered }) {
-  const [username, setUserName] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -37,7 +37,7 @@ export default function SignUp({ setUserRegistered }) {
     e.preventDefault();
 
     await registerUser({
-      username,
+      userName,
       email,
       password,
       role,
