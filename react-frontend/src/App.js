@@ -9,15 +9,23 @@ import { PredictedLocation } from "./components/PredictedLocation.js";
 import { Helmet } from "react-helmet";
 import Dashboard from "./components/Dashboard.js";
 import Preferences from "./components/Preferences.js";
-import Login from "./components/Login/Login.js";
+import SignUp from "./components/SignUp/signUp.js";
 import useToken from "./useToken.js";
+import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
 
 function App() {
-  const { token, setToken } = useToken();
+  // const { token, setToken } = useToken();
+  const [userRegistered, setUserRegistered] = useState(true);
 
-  if (!token) {
-    return <Login setToken={setToken} />;
+  if (!userRegistered) {
+    return (
+      <SnackbarProvider maxSnack={3}>
+        <SignUp setUserRegistered={setUserRegistered} />;
+      </SnackbarProvider>
+    );
   }
+
+  // }
   // const [movies, setMovies] = useState([]);
   // const [predictedLan, setPredictedLan] = useState(0);
 
@@ -104,30 +112,23 @@ function App() {
   //           }
 
   return (
-    // <Container style={{ marginTop: 40 }}>
-    //   <Helmet>
-    //     <title>Next Trip</title>
-    //   </Helmet>
-    //   {/* <MovieForm
-    //     onNewMovie={(movie) =>
-    //       setMovies((currentMovies) => [movie, ...currentMovies])
-    //     }
-    //   /> */}
-    //   {/* <Movies movies={movies} /> */}
-    //   <PredictedLocation />
-    //   {/* <GetLocation /> */}
-    // </Container>
+    <Container style={{ marginTop: 40 }}>
+      <Helmet>
+        <title>Next Trip</title>
+      </Helmet>
+      <PredictedLocation />
+    </Container>
 
-    <div className="wrapper">
-      <h1>Application</h1>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/preferences" element={<Preferences />} />
-          <Route path="/predict_location" element={<PredictedLocation />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    // <div className="wrapper">
+    //   <h1>Application</h1>
+    //   <BrowserRouter>
+    //     <Routes>
+    //       <Route path="/dashboard" element={<Dashboard />} />
+    //       <Route path="/preferences" element={<Preferences />} />
+    //       <Route path="/predict_location" element={<PredictedLocation />} />
+    //     </Routes>
+    //   </BrowserRouter>
+    // </div>
   );
 }
 
