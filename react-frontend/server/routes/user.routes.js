@@ -19,10 +19,10 @@ export default function setupUserRoutes(app) {
 
   app.get("/api/login", allAccess);
 
-  app.get("/api/driverBasic", [authJwt.verifyToken], userBoard);
+  app.get("/api/rider", [authJwt.verifyToken], userBoard);
 
   app.get(
-    "/api/rider",
+    "/api/driver",
     [authJwt.verifyToken, authJwt.isModerator],
     moderatorBoard
   );

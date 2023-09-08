@@ -1,25 +1,23 @@
-// import { useEffect, useState } from "react";
 import React, { useState } from "react";
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import { Movies } from "./components/Movies";
-// import { MovieForm } from "./components/MovieForm";
 import { Container } from "semantic-ui-react";
-import { PredictedLocation } from "./components/PredictedLocation.js";
 import { Helmet } from "react-helmet";
+import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+
+import "./App.css";
+import { PredictedLocation } from "./components/PredictedLocation.js";
 import Dashboard from "./components/Dashboard.js";
 import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
-// import useToken from "./useToken.js";
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
 import Login from "./components/Login/login.js";
 
 function App() {
   // const { token, setToken } = useToken();
-  const [userRegistered, setUserRegistered] = useState(false);
+  const [userRegistered, setUserRegistered] = useState(true);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [role, setRole] = useState();
-  const [accessToken, setAccessToken] = useState("");
+  const [userType, setUserType] = useState("all");
+  // const [role, setRole] = useState();
+  // const [accessToken, setAccessToken] = useState("");
 
   if (!userRegistered) {
     return (
@@ -121,25 +119,48 @@ function App() {
         <title>Next Trip</title>
       </Helmet>
       {/* <PredictedLocation /> */}
-      <SnackbarProvider maxSnack={3}>
+      {/* <SnackbarProvider maxSnack={3}>
         <Login
           setUserLoggedIn={setUserLoggedIn}
-          setRole={setRole}
-          setAccessToken={setAccessToken}
+          // setRole={setRole}
+          // setAccessToken={setAccessToken}
         />
         ;
-      </SnackbarProvider>
+      </SnackbarProvider> */}
+      <div className="wrapper">
+        <h1>Next Trip Application</h1>
+        {/* <Login
+          setUserLoggedIn={setUserLoggedIn}
+          // setRole={setRole}
+          // setAccessToken={setAccessToken}
+        /> */}
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                <Login
+                  setUserLoggedIn={setUserLoggedIn}
+                  setUserType={setUserType}
+                />
+              }
+            />
+            <Route path="/signUp" element={<SignUp />} />
+            <Route path="/preferences" element={<Preferences />} />
+            <Route
+              path="/predict_location"
+              element={
+                userLoggedIn ? (
+                  <PredictedLocation />
+                ) : (
+                  <Login setUserLoggedIn={setUserLoggedIn} />
+                )
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </Container>
-    // <div className="wrapper">
-    //   <h1>Application</h1>
-    //   <BrowserRouter>
-    //     <Routes>
-    //       <Route path="/dashboard" element={<Dashboard />} />
-    //       <Route path="/preferences" element={<Preferences />} />
-    //       <Route path="/predict_location" element={<PredictedLocation />} />
-    //     </Routes>
-    //   </BrowserRouter>
-    // </div>
   );
 }
 

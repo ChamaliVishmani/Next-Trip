@@ -4,12 +4,23 @@ import { useSnackbar } from "notistack";
 
 import "./login.css";
 import { loginUser } from "../../components/utils/loginApi.js";
+import { getUserContent } from "../utils/userContent.js";
+import SignUp from "../SignUp/signUp";
+import { useNavigate } from "react-router-dom";
 
-export default function Login({ setUserLoggedIn, setRole, setAccessToken }) {
+export default function Login({ setUserLoggedIn, setUserType }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState();
+  const [accessToken, setAccessToken] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    navigate("/signUp");
+  };
 
   // const loginUser = async (credentials) => {
   //   try {
@@ -44,6 +55,14 @@ export default function Login({ setUserLoggedIn, setRole, setAccessToken }) {
         setAccessToken,
         enqueueSnackbar
       );
+      console.log("handleSubmit ", accessToken);
+      const userType = await getUserContent(accessToken);
+
+      setUserType(userType);
+      switch (userType) {
+        case "Driver":
+          navigate("/predict_location");
+      }
     } catch (error) {
       console.log("error :", error);
     }
@@ -68,12 +87,15 @@ export default function Login({ setUserLoggedIn, setRole, setAccessToken }) {
           <button type="submit">Login</button>
         </div>
       </form>
+      <div>
+        <button type="button" onClick={handleSignUp}>
+          Register
+        </button>
+      </div>
     </div>
   );
 }
 
 Login.propTypes = {
   setUserLoggedIn: PropTypes.func.isRequired,
-  setRole: PropTypes.func.isRequired,
-  setAccessToken: PropTypes.func.isRequired,
 };

@@ -57,7 +57,7 @@ export async function loginUser(
     setUserLoggedIn(true);
 
     enqueueSnackbar("Logged in successfully", { variant: "success" });
-    getUserContent(accessToken);
+    // getUserContent(accessToken);
     // console.log("accessToken ", accessToken);
   } catch (error) {
     enqueueSnackbar(

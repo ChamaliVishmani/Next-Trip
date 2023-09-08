@@ -3,7 +3,7 @@ import axios from "axios";
 export async function getUserContent(accessToken) {
   try {
     console.log("accessToken1 ", accessToken);
-    const apiUrl = `http://localhost:8080/api/driverBasic`;
+    const apiUrl = `http://localhost:8080/api/driver`;
     console.log("accessToken ", accessToken);
 
     const response = await axios.get(apiUrl, {
@@ -23,6 +23,7 @@ export async function getUserContent(accessToken) {
     // );
 
     // setUserLoggedIn(true);
+    return response.data;
   } catch (error) {
     console.error("Request error:", error);
     // enqueueSnackbar(
@@ -31,5 +32,6 @@ export async function getUserContent(accessToken) {
     //     variant: "error",
     //   }
     // );
+    return "";
   }
 }
