@@ -11,10 +11,20 @@ import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 
+function setDriverLoggedIn(driverLoggedIn) {
+  sessionStorage.setItem("driverLoggedIn", driverLoggedIn);
+}
+
+function getDriverLoggedIn() {
+  const driverLoggedIn = sessionStorage.getItem("driverLoggedIn");
+  return driverLoggedIn;
+}
+
 function App() {
   const [userSignedUp, setUserSignedUp] = useState(true);
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  // const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [userType, setUserType] = useState("all");
+  const driverLoggedIn = getDriverLoggedIn();
 
   return (
     <Container style={{ marginTop: 40 }}>
@@ -39,7 +49,7 @@ function App() {
               element={
                 <SnackbarProvider maxSnack={3}>
                   <Login
-                    setUserLoggedIn={setUserLoggedIn}
+                    setUserLoggedIn={setDriverLoggedIn}
                     setUserType={setUserType}
                   />
                 </SnackbarProvider>
@@ -50,7 +60,7 @@ function App() {
               element={
                 <SnackbarProvider maxSnack={3}>
                   <Login
-                    setUserLoggedIn={setUserLoggedIn}
+                    setUserLoggedIn={setDriverLoggedIn}
                     setUserType={setUserType}
                   />
                 </SnackbarProvider>
@@ -68,10 +78,10 @@ function App() {
             <Route
               path="/predict_location"
               element={
-                userLoggedIn ? (
+                driverLoggedIn ? (
                   <PredictedLocation />
                 ) : (
-                  <Login setUserLoggedIn={setUserLoggedIn} />
+                  <Login setUserLoggedIn={setDriverLoggedIn} />
                 )
               }
             />

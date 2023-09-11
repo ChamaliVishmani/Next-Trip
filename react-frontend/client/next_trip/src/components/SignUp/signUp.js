@@ -4,6 +4,7 @@ import "./signUp.css";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { Dropdown } from "semantic-ui-react";
+import { loginUser } from "../utils/loginApi";
 
 export default function SignUp({ setUserSignedUp }) {
   const [userName, setUserName] = useState("");
@@ -43,6 +44,8 @@ export default function SignUp({ setUserSignedUp }) {
       password,
       role,
     });
+
+    // await loginUser({});
   };
 
   const handleUserTypeChange = (event) => {
@@ -102,5 +105,5 @@ export default function SignUp({ setUserSignedUp }) {
 }
 
 SignUp.propTypes = {
-  setUserRegistered: PropTypes.func.isRequired,
+  setUserSignedUp: PropTypes.func.isRequired,
 };

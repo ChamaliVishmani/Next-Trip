@@ -3,13 +3,22 @@ import axios from "axios";
 export async function authenticateDriver(accessToken) {
   try {
     console.log("accessToken1 ", accessToken);
-    const apiUrl = `http://localhost:8080/api/driver`;
+    const apiUrl = `http://localhost:8080/api/driverBoard`;
     console.log("accessToken ", accessToken);
 
     const response = await axios.get(apiUrl, {
       headers: { "x-access-token": accessToken },
     });
-    console.log("Response:", response);
+    const responseJson = JSON.stringify(response).split('"');
+    const redirectUrlIndex = responseJson.findIndex((element) =>
+      element.includes("redirectUrl")
+    );
+    const redirectUrl = responseJson[redirectUrlIndex + 2];
+    console.log("responseJson", responseJson);
+    console.log("redirectUrl", redirectUrl);
+
+    //redirect to predict location
+    window.location.href = redirectUrl;
     // enqueueSnackbar("Logged in successfully", { variant: "success" });
 
     // const responseComponents = JSON.stringify(response).split('"');

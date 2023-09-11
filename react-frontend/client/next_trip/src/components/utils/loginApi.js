@@ -58,7 +58,8 @@ export async function loginUser(
 
     enqueueSnackbar("Logged in successfully", { variant: "success" });
     // getUserContent(accessToken);
-    // console.log("accessToken ", accessToken);
+    console.log("accessToken ", accessToken, " role ", role);
+    authenticateDriver(accessToken);
   } catch (error) {
     enqueueSnackbar(
       error.response?.data?.message || "An error occurred while login user",
