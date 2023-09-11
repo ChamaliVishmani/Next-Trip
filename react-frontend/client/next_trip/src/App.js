@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, json } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import { Helmet } from "react-helmet";
 import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
@@ -11,20 +11,20 @@ import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 
-function setDriverLoggedIn(driverLoggedIn) {
-  sessionStorage.setItem("driverLoggedIn", driverLoggedIn);
-}
+// function setUserLoggedInRole(userLoggedIn) {
+//   sessionStorage.setItem("userLoggedIn", userLoggedIn);
+// }
 
-function getDriverLoggedIn() {
-  const driverLoggedIn = sessionStorage.getItem("driverLoggedIn");
-  return driverLoggedIn;
+function getUserLoggedIn() {
+  const role = sessionStorage.getItem("role");
+  return role;
 }
 
 function App() {
   const [userSignedUp, setUserSignedUp] = useState(true);
   // const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [userType, setUserType] = useState("all");
-  const driverLoggedIn = getDriverLoggedIn();
+  const loggedInUserRole = getUserLoggedIn();
 
   return (
     <Container style={{ marginTop: 40 }}>
@@ -48,10 +48,7 @@ function App() {
               path=""
               element={
                 <SnackbarProvider maxSnack={3}>
-                  <Login
-                    setUserLoggedIn={setDriverLoggedIn}
-                    setUserType={setUserType}
-                  />
+                  <Login setUserType={setUserType} />
                 </SnackbarProvider>
               }
             />
@@ -59,10 +56,7 @@ function App() {
               path="/login"
               element={
                 <SnackbarProvider maxSnack={3}>
-                  <Login
-                    setUserLoggedIn={setDriverLoggedIn}
-                    setUserType={setUserType}
-                  />
+                  <Login setUserType={setUserType} />
                 </SnackbarProvider>
               }
             />
@@ -78,11 +72,7 @@ function App() {
             <Route
               path="/predict_location"
               element={
-                driverLoggedIn ? (
-                  <PredictedLocation />
-                ) : (
-                  <Login setUserLoggedIn={setDriverLoggedIn} />
-                )
+                loggedInUserRole == "Driver" ? <PredictedLocation /> : <Login />
               }
             />
           </Routes>

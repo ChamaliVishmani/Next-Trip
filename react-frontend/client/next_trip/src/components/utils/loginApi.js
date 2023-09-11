@@ -18,7 +18,6 @@ async function setElement(array, component, enqueueSnackbar) {
 
 export async function loginUser(
   credentials,
-  setUserLoggedIn,
   setRole,
   setAccessToken,
   enqueueSnackbar
@@ -54,12 +53,9 @@ export async function loginUser(
     setRole(role);
     setAccessToken(accessToken);
 
-    setUserLoggedIn(true);
-
     enqueueSnackbar("Logged in successfully", { variant: "success" });
-    // getUserContent(accessToken);
-    console.log("accessToken ", accessToken, " role ", role);
-    authenticateDriver(accessToken);
+
+    authenticateDriver(accessToken, role);
   } catch (error) {
     enqueueSnackbar(
       error.response?.data?.message || "An error occurred while login user",

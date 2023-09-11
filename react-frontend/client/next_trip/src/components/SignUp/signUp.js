@@ -45,7 +45,7 @@ export default function SignUp({ setUserSignedUp }) {
       role,
     });
 
-    // await loginUser({});
+    await loginUser({});
   };
 
   const handleUserTypeChange = (event) => {
@@ -54,12 +54,15 @@ export default function SignUp({ setUserSignedUp }) {
     switch (userType) {
       case "Driver":
         setRole("user");
+        setUserSignedUp("Driver");
         break;
       case "Rider":
         setRole("moderator");
+        setUserSignedUp("Rider");
         break;
       default:
         setRole("user");
+        setUserSignedUp("Driver");
     }
 
     console.log("role : ", role);

@@ -1,11 +1,24 @@
 import axios from "axios";
 
-export async function authenticateDriver(accessToken) {
-  try {
-    console.log("accessToken1 ", accessToken);
-    const apiUrl = `http://localhost:8080/api/driverBoard`;
-    console.log("accessToken ", accessToken);
+function setUserLoggedInRole(role) {
+  // sessionStorage.setItem("userLoggedIn", userLoggedIn);
+  sessionStorage.setItem("role", role);
+}
 
+export async function authenticateDriver(accessToken, role) {
+  try {
+    let apiUrl = ``;
+    console.log("authenticateDriver role : ", role);
+    switch (role) {
+      case "ROLE_USER":
+        apiUrl = `http://localhost:8080/api/driverBoard`;
+        setUserLoggedInRole("Driver");
+        break;
+      case "moderator":
+        break;
+      default:
+        break;
+    }
     const response = await axios.get(apiUrl, {
       headers: { "x-access-token": accessToken },
     });
@@ -14,33 +27,11 @@ export async function authenticateDriver(accessToken) {
       element.includes("redirectUrl")
     );
     const redirectUrl = responseJson[redirectUrlIndex + 2];
-    console.log("responseJson", responseJson);
-    console.log("redirectUrl", redirectUrl);
+    console.log("responseJson", response);
+    console.log("redirectUrl", response.data);
 
-    //redirect to predict location
     window.location.href = redirectUrl;
-    // enqueueSnackbar("Logged in successfully", { variant: "success" });
-
-    // const responseComponents = JSON.stringify(response).split('"');
-
-    // setElement(responseComponents, "roles", setRole, enqueueSnackbar);
-    // setElement(
-    //   responseComponents,
-    //   "accessToken",
-    //   setAccessToken,
-    //   enqueueSnackbar
-    // );
-
-    // setUserLoggedIn(true);
-    return response.data;
   } catch (error) {
     console.error("Request error:", error);
-    // enqueueSnackbar(
-    //   error.response?.data?.message || "An error occurred while login user",
-    //   {
-    //     variant: "error",
-    //   }
-    // );
-    return "";
   }
 }

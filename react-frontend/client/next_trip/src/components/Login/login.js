@@ -6,7 +6,7 @@ import "./login.css";
 import { loginUser } from "../../components/utils/loginApi.js";
 import { useNavigate } from "react-router-dom";
 
-export default function Login({ setUserLoggedIn, setUserType }) {
+export default function Login({ setUserType }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState();
@@ -48,7 +48,6 @@ export default function Login({ setUserLoggedIn, setUserType }) {
           userName,
           password,
         },
-        setUserLoggedIn,
         setRole,
         setAccessToken,
         enqueueSnackbar
@@ -99,6 +98,4 @@ export default function Login({ setUserLoggedIn, setUserType }) {
   );
 }
 
-Login.propTypes = {
-  setUserLoggedIn: PropTypes.func.isRequired,
-};
+Login.propTypes = {};
