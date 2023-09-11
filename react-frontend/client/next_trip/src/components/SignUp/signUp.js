@@ -3,18 +3,44 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { Dropdown } from "semantic-ui-react";
+import validator from "validator";
 
 import "./signUp.css";
 import { loginUser } from "../utils/loginApi";
 
-export default function SignUp({ setUserSignedUp }) {
+export default function SignUp() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [roles, setRoles] = useState([]);
   const [accessToken, setAccessToken] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
+  // const [userSignedUp, setUserSignedUp] = useState(true);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const validatePWStrength = (value) => {
+    if (
+      validator.isStrongPassword(value, {
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
+    ) {
+      setPasswordStrength("Strong Password");
+    } else {
+      setPasswordStrength("Weak Password");
+    }
+  };
+
+  const disabledRegister =
+    passwordStrength !== "Strong Password" ||
+    userName === "" ||
+    password === "" ||
+    email === "" ||
+    roles.length === 0;
 
   const registerUser = async (credentials) => {
     try {
@@ -25,7 +51,17 @@ export default function SignUp({ setUserSignedUp }) {
       });
 
       enqueueSnackbar(response.data.message, { variant: "success" });
-      setUserSignedUp(true);
+      // setUserSignedUp(true);
+
+      await loginUser(
+        {
+          userName,
+          password,
+        },
+        setRoles,
+        setAccessToken,
+        enqueueSnackbar
+      );
     } catch (error) {
       enqueueSnackbar(
         error.response.data.message ||
@@ -46,16 +82,6 @@ export default function SignUp({ setUserSignedUp }) {
       password,
       roles,
     });
-
-    await loginUser(
-      {
-        userName,
-        password,
-      },
-      setRoles,
-      setAccessToken,
-      enqueueSnackbar
-    );
   };
 
   const handleUserTypeChange = (event) => {
@@ -64,15 +90,15 @@ export default function SignUp({ setUserSignedUp }) {
     switch (userType) {
       case "Driver":
         setRoles(["user"]);
-        setUserSignedUp("Driver");
+        // setUserSignedUp("Driver");
         break;
       case "Rider":
         setRoles(["moderator"]);
-        setUserSignedUp("Rider");
+        // setUserSignedUp("Rider");
         break;
       default:
         setRoles(["user"]);
-        setUserSignedUp("Driver");
+      // setUserSignedUp("Driver");
     }
 
     console.log("role : ", roles);
@@ -90,9 +116,13 @@ export default function SignUp({ setUserSignedUp }) {
           <p>Password</p>
           <input
             type="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePWStrength(e.target.value);
+            }}
           />
         </label>
+        <span>{passwordStrength}</span>
         <label>
           <p>Email</p>
           <input type="email" onChange={(e) => setEmail(e.target.value)} />
@@ -110,13 +140,13 @@ export default function SignUp({ setUserSignedUp }) {
           />
         </div>
         <div>
-          <button type="submit">Register</button>
+          <button type="submit" disabled={disabledRegister}>
+            Register
+          </button>
         </div>
       </form>
     </div>
   );
 }
 
-SignUp.propTypes = {
-  setUserSignedUp: PropTypes.func.isRequired,
-};
+SignUp.propTypes = {};

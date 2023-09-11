@@ -21,7 +21,6 @@ function getUserLoggedIn() {
 }
 
 function App() {
-  const [userSignedUp, setUserSignedUp] = useState(true);
   // const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [userType, setUserType] = useState("all");
   const loggedInUserRole = getUserLoggedIn();
@@ -64,7 +63,7 @@ function App() {
               path="/signUp"
               element={
                 <SnackbarProvider maxSnack={3}>
-                  <SignUp setUserSignedUp={setUserSignedUp} />
+                  <SignUp />
                 </SnackbarProvider>
               }
             />
