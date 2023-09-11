@@ -1,8 +1,8 @@
-react-frontend/client/next_trip/node_modules
-react-frontend/client/next_trip/src/keys.js
+nextTrip_FrontEnd/node_modules
+nextTrip_FrontEnd/src/keys.js
 
-react-frontend/server/node_modules
-react-frontend/server/config
+mongoDB_Server/node_modules
+mongoDB_Server/config
 
-flask-backend/data
-flask-backend/env
+flask_LocationModel/data
+flask_LocationModel/env

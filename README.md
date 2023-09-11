@@ -6,7 +6,7 @@ uni sem 06 project
 
 (in a command prompt)
 
-cd flask-backend
+cd flask_LocationModel
 
 env\Scripts\activate
 
@@ -18,18 +18,16 @@ set FLASK_DEBUG=1
 
 flask run
 
----
-
 # run frontend
 
-cd react-frontend/client/next_trip
+cd nextTrip_FrontEnd
 
 npm install
 
 npm start
 
-# start server
+# start mongoDB server
 
-cd react-frontend/server
+cd mongoDB_Server
 
 npm start
