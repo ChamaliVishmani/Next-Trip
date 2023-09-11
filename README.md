@@ -22,7 +22,7 @@ flask run
 
 # run frontend
 
-cd react-frontend
+cd react-frontend/client/next_trip
 
 npm install
 
@@ -30,6 +30,6 @@ npm start
 
 # start server
 
-node server.js
+cd react-frontend/server
 
-next -> connect the submit form with the db configs
+npm start

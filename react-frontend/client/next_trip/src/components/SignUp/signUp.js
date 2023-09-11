@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import "./signUp.css";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { Dropdown } from "semantic-ui-react";
 
 export default function SignUp({ setUserSignedUp }) {
   const [userName, setUserName] = useState("");
@@ -44,6 +45,23 @@ export default function SignUp({ setUserSignedUp }) {
     });
   };
 
+  const handleUserTypeChange = (event) => {
+    const userType = event.target.innerText;
+
+    switch (userType) {
+      case "Driver":
+        setRole("user");
+        break;
+      case "Rider":
+        setRole("moderator");
+        break;
+      default:
+        setRole("user");
+    }
+
+    console.log("role : ", role);
+  };
+
   return (
     <div className="login-wrapper">
       <h1>SignUp for Next-Trip</h1>
@@ -63,10 +81,18 @@ export default function SignUp({ setUserSignedUp }) {
           <p>Email</p>
           <input type="email" onChange={(e) => setEmail(e.target.value)} />
         </label>
-        <label>
-          <p>Type : user, moderator or admin</p>
-          <input type="text" onChange={(e) => setRole(e.target.value)} />
-        </label>
+        <div>
+          <Dropdown
+            labeled
+            options={[
+              { key: "Driver", text: "Driver", value: "user" },
+              { key: "Rider", text: "Rider", value: "moderator" },
+            ]}
+            selection
+            onChange={handleUserTypeChange}
+            placeholder="Driver / Rider"
+          />
+        </div>
         <div>
           <button type="submit">Register</button>
         </div>

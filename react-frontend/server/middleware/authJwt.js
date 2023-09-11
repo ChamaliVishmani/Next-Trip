@@ -60,10 +60,21 @@ const isModerator = async (req, res, next) => {
   }
 };
 
+const isUser = async (req, res, next) => {
+  const authorized = await checkUserRole(req, res, "user");
+  if (authorized) {
+    next();
+  } else {
+    // User is not authorized, send a response
+    res.status(403).send({ message: "Require User Role!" });
+  }
+};
+
 const authJwt = {
   verifyToken,
   isAdmin,
   isModerator,
+  isUser,
 };
 
 export default authJwt;
