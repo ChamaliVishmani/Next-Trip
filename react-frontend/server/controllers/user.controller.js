@@ -2,12 +2,6 @@ export function allAccess(req, res) {
   res.status(200).send("Public Content.");
 }
 
-// export function userBoard(req, res) {
-//   res.status(200).send("User Content.");
-// }
-
-// In your user.controller.js
-
 export function userBoard(req, res) {
   // Construct the URL of the user's page
   const userPageUrl = `/predict_location`; // You can customize the URL structure

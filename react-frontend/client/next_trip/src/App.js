@@ -11,10 +11,6 @@ import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 
-// function setUserLoggedInRole(userLoggedIn) {
-//   sessionStorage.setItem("userLoggedIn", userLoggedIn);
-// }
-
 function getUserLoggedIn() {
   const role = sessionStorage.getItem("role");
   return role;
@@ -30,15 +26,7 @@ function App() {
       <Helmet>
         <title>Next Trip</title>
       </Helmet>
-      {/* <PredictedLocation /> */}
-      {/* <SnackbarProvider maxSnack={3}>
-        <Login
-          setUserLoggedIn={setUserLoggedIn}
-          // setRole={setRole}
-          // setAccessToken={setAccessToken}
-        />
-        ;
-      </SnackbarProvider> */}
+
       <div className="wrapper">
         <h1>Next Trip Application</h1>
         <BrowserRouter>

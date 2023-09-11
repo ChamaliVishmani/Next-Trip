@@ -20,26 +20,6 @@ export default function Login({ setUserType }) {
     navigate("/signUp");
   };
 
-  // const loginUser = async (credentials) => {
-  //   try {
-  //     const apiUrl = `http://localhost:8080/api/auth/signin`;
-
-  //     const response = await axios.post(apiUrl, JSON.stringify(credentials), {
-  //       headers: { "Content-Type": "application/json" },
-  //     });
-
-  //     enqueueSnackbar(response.data.message, { variant: "success" });
-  //     setUserLoggedIn(true);
-  //   } catch (error) {
-  //     enqueueSnackbar(
-  //       error.response.data.message || "An error occurred while login user",
-  //       {
-  //         variant: "error",
-  //       }
-  //     );
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -52,19 +32,6 @@ export default function Login({ setUserType }) {
         setAccessToken,
         enqueueSnackbar
       );
-      // console.log("handleSubmit role ", role);
-      // const userType = setUserType(userType);
-      // switch (role) {
-      //   case "ROLE_USER":
-      //     try {
-      //       await authenticateDriver(accessToken);
-      //       navigate("/predict_location");
-      //     } catch (error) {
-      //       enqueueSnackbar("Failed to authenticate driver", {
-      //         variant: "error",
-      //       });
-      //     }
-      // }
     } catch (error) {
       console.log("error :", error);
     }

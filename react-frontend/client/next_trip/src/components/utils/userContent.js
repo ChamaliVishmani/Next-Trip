@@ -1,7 +1,6 @@
 import axios from "axios";
 
 function setUserLoggedInRole(role) {
-  // sessionStorage.setItem("userLoggedIn", userLoggedIn);
   sessionStorage.setItem("role", role);
 }
 

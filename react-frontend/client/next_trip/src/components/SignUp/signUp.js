@@ -51,7 +51,6 @@ export default function SignUp() {
       });
 
       enqueueSnackbar(response.data.message, { variant: "success" });
-      // setUserSignedUp(true);
 
       await loginUser(
         {
