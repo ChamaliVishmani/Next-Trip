@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import joblib
 
 db = SQLAlchemy()
@@ -12,6 +13,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
     db.init_app(app)
+    CORS(app, resources={r"/predict_location": {"origins": "*"}})
 
     from .views import main
     app.register_blueprint(main)

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Icon, Label, Container } from "semantic-ui-react";
-import { apiKey } from "../keys";
+import { apiKey } from "../keys.js";
 import axios from "axios";
 
 //todo : start journey when go to maps-> add new entry to db -> on cancel , remove new entry
@@ -61,21 +61,50 @@ export const PredictedLocation = () => {
     var hour = today.getHours();
     const dateTime = { weekday, hour };
 
-    await fetch("/predict_location", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dateTime),
-    }).then((response) =>
-      response.json().then((data) => {
-        setPredictedLan(data.predicted_lat[0]);
-        setPredictedLon(data.predicted_lon[0]);
-      })
-    );
+    try {
+      const apiUrl = `http://localhost:5000/predict_location`;
 
-    fetchPredictedDestinationAddress();
+      const response = await axios
+        .post(apiUrl, JSON.stringify(dateTime), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          // response.json().then((data) => {
+          //   setPredictedLan(data.predicted_lat[0]);
+          //   setPredictedLon(data.predicted_lon[0]);
+          // });
+
+          setPredictedLan(response.data.predicted_lat);
+          setPredictedLon(response.data.predicted_lon);
+        });
+
+      fetchPredictedDestinationAddress();
+    } catch (error) {
+      console.log("err :", error);
+    }
   };
+
+  // const predictDestination = async () => {
+  //   var today = new Date();
+  //   var weekday = today.getDay();
+  //   var hour = today.getHours();
+  //   const dateTime = { weekday, hour };
+
+  //   await fetch("/predict_location", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(dateTime),
+  //   }).then((response) =>
+  //     response.json().then((data) => {
+  //       setPredictedLan(data.predicted_lat[0]);
+  //       setPredictedLon(data.predicted_lon[0]);
+  //     })
+  //   );
+
+  //   fetchPredictedDestinationAddress();
+  // };
 
   useEffect(() => {
     predictDestination();
