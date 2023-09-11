@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { authenticateDriver } from "./userContent.js";
 
 async function setElement(array, component, enqueueSnackbar) {
@@ -34,14 +35,12 @@ export async function loginUser(
     const rolePromise = setElement(
       responseComponents,
       "roles",
-      setRole,
       enqueueSnackbar
     );
 
     const accessTokenPromise = setElement(
       responseComponents,
       "accessToken",
-      setAccessToken,
       enqueueSnackbar
     );
 
@@ -54,7 +53,7 @@ export async function loginUser(
     setAccessToken(accessToken);
 
     enqueueSnackbar("Logged in successfully", { variant: "success" });
-
+    console.log("loginUser role", role);
     authenticateDriver(accessToken, role);
   } catch (error) {
     enqueueSnackbar(

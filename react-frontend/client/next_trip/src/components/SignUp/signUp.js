@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import "./signUp.css";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { Dropdown } from "semantic-ui-react";
+
+import "./signUp.css";
 import { loginUser } from "../utils/loginApi";
 
 export default function SignUp({ setUserSignedUp }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [accessToken, setAccessToken] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -42,10 +44,18 @@ export default function SignUp({ setUserSignedUp }) {
       userName,
       email,
       password,
-      role,
+      roles,
     });
 
-    await loginUser({});
+    await loginUser(
+      {
+        userName,
+        password,
+      },
+      setRoles,
+      setAccessToken,
+      enqueueSnackbar
+    );
   };
 
   const handleUserTypeChange = (event) => {
@@ -53,19 +63,19 @@ export default function SignUp({ setUserSignedUp }) {
 
     switch (userType) {
       case "Driver":
-        setRole("user");
+        setRoles(["user"]);
         setUserSignedUp("Driver");
         break;
       case "Rider":
-        setRole("moderator");
+        setRoles(["moderator"]);
         setUserSignedUp("Rider");
         break;
       default:
-        setRole("user");
+        setRoles(["user"]);
         setUserSignedUp("Driver");
     }
 
-    console.log("role : ", role);
+    console.log("role : ", roles);
   };
 
   return (

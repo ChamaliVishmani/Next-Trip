@@ -14,7 +14,9 @@ export async function authenticateDriver(accessToken, role) {
         apiUrl = `http://localhost:8080/api/driverBoard`;
         setUserLoggedInRole("Driver");
         break;
-      case "moderator":
+      case "ROLE_MODERATOR":
+        apiUrl = `http://localhost:8080/api/riderBoard`;
+        setUserLoggedInRole("Rider");
         break;
       default:
         break;
