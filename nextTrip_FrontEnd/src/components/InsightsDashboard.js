@@ -6,7 +6,19 @@ import {
   HeatmapLayerF,
 } from "@react-google-maps/api";
 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
 import { apiKey } from "../keys.js";
+import { Container } from "semantic-ui-react";
 
 const containerStyle = {
   width: "400px",
@@ -22,7 +34,10 @@ const center = {
 export default function InsightsDashboard() {
   const [heatmapData, setHeatMapData] = useState();
   const [heatmapDataPoints, setHeatMapDataPoints] = useState("");
-  const [map, setMap] = React.useState(null);
+  const [map, setMap] = useState(null);
+
+  const [hourlyCount, setHourlyCount] = useState();
+  const [hourlyCountPoints, setHourlyCountPoints] = useState();
 
   const setHeatMapDataPointsFunc = () => {
     var heatMapDataPointsToSet = heatmapData.map(function (point) {
@@ -41,7 +56,6 @@ export default function InsightsDashboard() {
     var weekday = today.getDay();
     var hour = today.getHours();
     const dateTime = { weekday, hour };
-    console.log("dateTime : ", dateTime);
 
     try {
       const apiUrl = `http://localhost:5000/heatmap_data`;
@@ -95,24 +109,94 @@ export default function InsightsDashboard() {
       setHeatMapDataPointsFunc();
     }
   }, [heatmapData]);
+  /////
 
-  return isLoaded ? (
+  useEffect(() => {
+    getHourCountData();
+  }, []);
+
+  useEffect(() => {
+    if (hourlyCount) {
+      modifyHourlycountHours();
+    }
+  }, [hourlyCount]);
+
+  const getHourCountData = async () => {
+    try {
+      const apiUrl = `http://localhost:5000/count_data/by_hour`;
+
+      const response = await axios.get(apiUrl).then((response) => {
+        // const data = response.data.heatmap_data;
+        // if (data) {
+        //   setHeatMapData(response.data.heatmap_data);
+        //   setHeatMapDataPointsFunc();
+        // }
+        setHourlyCount(response.data.hourcount_data);
+        console.log("res : ", response);
+      });
+    } catch (error) {
+      console.log("err :", error);
+    }
+  };
+
+  const modifyHourlycountHours = () => {
+    const modifiedHourlyCount = hourlyCount.map((dataPoint) => ({
+      ...dataPoint,
+      hour: dataPoint.hour + 1,
+    }));
+    setHourlyCountPoints(modifiedHourlyCount);
+  };
+
+  return (
     <>
-      {heatmapDataPoints && heatmapDataPoints.length > 0 ? (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={10}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-        >
-          <HeatmapLayerF data={heatmapDataPoints} />
-        </GoogleMap>
-      ) : (
-        <div>Loading heatmap data...</div>
-      )}
+      <Container>
+        {isLoaded ? (
+          <>
+            {heatmapDataPoints && heatmapDataPoints.length > 0 ? (
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={10}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+              >
+                <HeatmapLayerF data={heatmapDataPoints} />
+              </GoogleMap>
+            ) : (
+              <div>Loading heatmap data...</div>
+            )}
+          </>
+        ) : (
+          <div>Loading...</div>
+        )}
+      </Container>
+      <Container>
+        {hourlyCount && hourlyCount.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              width={500}
+              height={300}
+              data={hourlyCountPoints}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              {console.log("hourlyCount : ", hourlyCount, " length array :")}
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="hour" interval={1} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="count" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div>Loading chart data...</div>
+        )}
+      </Container>
     </>
-  ) : (
-    <div>Loading...</div>
   );
 }
