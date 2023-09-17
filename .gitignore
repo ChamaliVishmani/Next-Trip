@@ -6,3 +6,6 @@ mongoDB_Server/config
 
 flask_LocationModel/data
 flask_LocationModel/env
+
+Pipfile
+Pipfile.lock
