@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from . import db
 from .models import Movie
 import pandas as pd
-from . import latitude_model, logitude_model, heatmap_data, hourcount_data, daycount_data
+from . import latitude_model, logitude_model, heatmap_data, hourcount_data, daycount_data, dayHrcount_data
 
 main = Blueprint('main', __name__)
 
@@ -93,6 +93,28 @@ def get_count_data_day():
             orient='records')
 
         return jsonify({'daycount_data': response}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@main.route('/count_data/by_dayHr', methods=['POST'])
+def get_count_data_dayHr():
+    try:
+        data = request.get_json()
+
+        if 'weekday' not in data:
+            return jsonify({'error': 'Missing parameters weekday'}), 400
+
+        new_weekday = data['weekday']
+
+        filtered_data = dayHrcount_data[(
+            dayHrcount_data['weekday'] == new_weekday)]
+
+        response = filtered_data.to_dict(
+            orient='records')
+
+        return jsonify({'dayHrcount_data': response}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
