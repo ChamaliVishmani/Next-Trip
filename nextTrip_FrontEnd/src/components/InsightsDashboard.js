@@ -15,14 +15,16 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 
 import { apiKey } from "../keys.js";
 import { Container } from "semantic-ui-react";
 
 const containerStyle = {
-  width: "400px",
-  height: "400px",
+  width: "300px",
+  height: "300px",
 };
 
 const center = {
@@ -35,9 +37,12 @@ export default function InsightsDashboard() {
   const [heatmapData, setHeatMapData] = useState();
   const [heatmapDataPoints, setHeatMapDataPoints] = useState("");
   const [map, setMap] = useState(null);
+  const initialZoom = 12;
 
   const [hourlyCount, setHourlyCount] = useState();
   const [hourlyCountPoints, setHourlyCountPoints] = useState();
+  const [dailyCount, setDailyCount] = useState();
+  const [dailyCountPoints, setDailyCountPoints] = useState();
 
   const setHeatMapDataPointsFunc = () => {
     var heatMapDataPointsToSet = heatmapData.map(function (point) {
@@ -82,12 +87,18 @@ export default function InsightsDashboard() {
     libraries: ["visualization"],
   });
 
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
+  const onLoad = React.useCallback(
+    function callback(map) {
+      if (isLoaded) {
+        // const bounds = new window.google.maps.LatLngBounds(center);
+        // map.fitBounds(bounds);
+        map.setZoom(initialZoom);
 
-    setMap(map);
-  }, []);
+        setMap(map);
+      }
+    },
+    [isLoaded]
+  );
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
@@ -126,13 +137,7 @@ export default function InsightsDashboard() {
       const apiUrl = `http://localhost:5000/count_data/by_hour`;
 
       const response = await axios.get(apiUrl).then((response) => {
-        // const data = response.data.heatmap_data;
-        // if (data) {
-        //   setHeatMapData(response.data.heatmap_data);
-        //   setHeatMapDataPointsFunc();
-        // }
         setHourlyCount(response.data.hourcount_data);
-        console.log("res : ", response);
       });
     } catch (error) {
       console.log("err :", error);
@@ -146,6 +151,67 @@ export default function InsightsDashboard() {
     }));
     setHourlyCountPoints(modifiedHourlyCount);
   };
+  ////
+
+  useEffect(() => {
+    getDayCountData();
+  }, []);
+
+  useEffect(() => {
+    if (dailyCount) {
+      modifyDailycountHours();
+    }
+  }, [dailyCount]);
+
+  const getDayCountData = async () => {
+    try {
+      const apiUrl = `http://localhost:5000/count_data/by_day`;
+
+      const response = await axios.get(apiUrl).then((response) => {
+        setDailyCount(response.data.daycount_data);
+      });
+    } catch (error) {
+      console.log("err :", error);
+    }
+  };
+
+  const modifyDailycountHours = () => {
+    const modifiedDailyCount = dailyCount.map((dataPoint) => {
+      let weekday = "";
+
+      switch (dataPoint.weekday) {
+        case 0:
+          weekday = "Mon";
+          break;
+        case 1:
+          weekday = "Tues";
+          break;
+        case 2:
+          weekday = "Wed";
+          break;
+        case 3:
+          weekday = "Thurs";
+          break;
+        case 4:
+          weekday = "Fri";
+          break;
+        case 5:
+          weekday = "Sat";
+          break;
+        case 6:
+          weekday = "Sun";
+          break;
+        default:
+          break;
+      }
+
+      return {
+        ...dataPoint,
+        weekday: weekday,
+      };
+    });
+    setDailyCountPoints(modifiedDailyCount);
+  };
 
   return (
     <>
@@ -156,7 +222,7 @@ export default function InsightsDashboard() {
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={center}
-                zoom={10}
+                zoom={initialZoom}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
               >
@@ -171,7 +237,7 @@ export default function InsightsDashboard() {
         )}
       </Container>
       <Container>
-        {hourlyCount && hourlyCount.length > 0 ? (
+        {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               width={500}
@@ -184,7 +250,6 @@ export default function InsightsDashboard() {
                 bottom: 5,
               }}
             >
-              {console.log("hourlyCount : ", hourlyCount, " length array :")}
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="hour" interval={1} />
               <YAxis />
@@ -192,6 +257,32 @@ export default function InsightsDashboard() {
               <Legend />
               <Line type="monotone" dataKey="count" stroke="#8884d8" />
             </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div>Loading chart data...</div>
+        )}
+      </Container>
+      <Container>
+        {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              width={500}
+              height={300}
+              data={dailyCountPoints}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="weekday" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#8884d8" />
+            </BarChart>
           </ResponsiveContainer>
         ) : (
           <div>Loading chart data...</div>
