@@ -8,6 +8,8 @@ db = SQLAlchemy()
 latitude_model = joblib.load("./models/lat_model.pkl")
 logitude_model = joblib.load("./models/lon_model.pkl")
 heatmap_data = pd.read_csv("./data/heatmap_data.csv")
+hourcount_data = pd.read_csv("./data/hourcount_data.csv")
+daycount_data = pd.read_csv("./data/daycount_data.csv")
 
 
 def create_app():
