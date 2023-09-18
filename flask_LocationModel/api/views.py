@@ -111,7 +111,7 @@ def get_count_data_dayHr():
         filtered_data = dayHrcount_data[(
             dayHrcount_data['weekday'] == new_weekday)]
 
-        response = filtered_data.to_dict(
+        response = filtered_data[['count', 'hour']].to_dict(
             orient='records')
 
         return jsonify({'dayHrcount_data': response}), 200

@@ -4,6 +4,7 @@ import {
   GoogleMap,
   useJsApiLoader,
   HeatmapLayerF,
+  MarkerF,
 } from "@react-google-maps/api";
 
 import {
@@ -44,6 +45,13 @@ export default function InsightsDashboard() {
   const [dailyCount, setDailyCount] = useState();
   const [dailyCountPoints, setDailyCountPoints] = useState();
 
+  const [todayHrCount, setTodayHrCount] = useState();
+  const [todayHrCountPoints, setTodayHrCountPoints] = useState();
+
+  const [topFiveLocations, setTopFiveLocations] = useState();
+
+  // HeatMap
+
   const setHeatMapDataPointsFunc = () => {
     var heatMapDataPointsToSet = heatmapData.map(function (point) {
       const location = new window.google.maps.LatLng(point.Lat, point.Lon);
@@ -54,6 +62,22 @@ export default function InsightsDashboard() {
       };
     });
     setHeatMapDataPoints(heatMapDataPointsToSet);
+
+    // get top locations
+
+    if (
+      Array.isArray(heatMapDataPointsToSet) &&
+      heatMapDataPointsToSet.length > 0 &&
+      heatMapDataPointsToSet[0].hasOwnProperty("weight")
+    ) {
+      heatMapDataPointsToSet.sort((a, b) => b.weight - a.weight);
+      console.log("heatMapDataPointsToSet sorted", heatMapDataPointsToSet);
+      const topFiveLocationsToSet = heatMapDataPointsToSet.slice(0, 5);
+      setTopFiveLocations(topFiveLocationsToSet);
+      console.log("topFiveLocations", topFiveLocations);
+    } else {
+      console.error("heatmapDataPoints is not an array.");
+    }
   };
 
   const getHeatMapData = async () => {
@@ -90,8 +114,6 @@ export default function InsightsDashboard() {
   const onLoad = React.useCallback(
     function callback(map) {
       if (isLoaded) {
-        // const bounds = new window.google.maps.LatLngBounds(center);
-        // map.fitBounds(bounds);
         map.setZoom(initialZoom);
 
         setMap(map);
@@ -120,7 +142,17 @@ export default function InsightsDashboard() {
       setHeatMapDataPointsFunc();
     }
   }, [heatmapData]);
-  /////
+
+  // Top 4 locations popup markers
+
+  // heatmapDataPoints.sort((a, b) => b.weight - a.weight);
+
+  // const topFiveLocations = heatmapDataPoints.slice(0, 5).map((item) => ({
+  //   Lat: item.Lat,
+  //   Lon: item.Lon,
+  // }));
+
+  //Stats by Hour
 
   useEffect(() => {
     getHourCountData();
@@ -151,7 +183,8 @@ export default function InsightsDashboard() {
     }));
     setHourlyCountPoints(modifiedHourlyCount);
   };
-  ////
+
+  // Stats by day
 
   useEffect(() => {
     getDayCountData();
@@ -213,6 +246,51 @@ export default function InsightsDashboard() {
     setDailyCountPoints(modifiedDailyCount);
   };
 
+  // Stats for today
+
+  useEffect(() => {
+    getTodayData();
+  }, []);
+
+  useEffect(() => {
+    if (todayHrCount) {
+      modifyTodayHrCount();
+    }
+  }, [todayHrCount]);
+
+  const getTodayData = async () => {
+    var today = new Date();
+    var weekday = today.getDay();
+    const date = { weekday };
+
+    try {
+      const apiUrl = `http://localhost:5000/count_data/by_dayHr`;
+
+      const response = await axios
+        .post(apiUrl, JSON.stringify(date), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          const data = response.data.dayHrcount_data;
+          if (data) {
+            setTodayHrCount(response.data.dayHrcount_data);
+          }
+        });
+    } catch (error) {
+      console.log("err :", error);
+    }
+  };
+
+  const modifyTodayHrCount = () => {
+    const modifiedHourlyCount = todayHrCount.map((dataPoint) => ({
+      ...dataPoint,
+      hour: dataPoint.hour + 1,
+    }));
+    setTodayHrCountPoints(modifiedHourlyCount);
+  };
+
+  const handleMarkerClicked = () => {};
+
   return (
     <>
       <Container>
@@ -227,6 +305,29 @@ export default function InsightsDashboard() {
                 onUnmount={onUnmount}
               >
                 <HeatmapLayerF data={heatmapDataPoints} />
+                {topFiveLocations && topFiveLocations.length > 0 ? (
+                  topFiveLocations.map((currentLocation, index) => (
+                    <>
+                      <MarkerF
+                        key={index}
+                        position={currentLocation.location}
+                        icon={{
+                          scale: 3,
+                          path: window.google.maps.SymbolPath
+                            .BACKWARD_CLOSED_ARROW,
+                          strokeColor: "#0047AB",
+                          strokeWeight: 2.5,
+                          fillOpacity: 10,
+                          fillColor: "#89CFF0",
+                        }}
+                        label={"location " + (index + 1)}
+                        onClick={handleMarkerClicked()}
+                      />
+                    </>
+                  ))
+                ) : (
+                  <div>Loading top 5 locations data...</div>
+                )}
               </GoogleMap>
             ) : (
               <div>Loading heatmap data...</div>
@@ -259,7 +360,7 @@ export default function InsightsDashboard() {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <div>Loading chart data...</div>
+          <div>Loading hourly chart data...</div>
         )}
       </Container>
       <Container>
@@ -285,7 +386,33 @@ export default function InsightsDashboard() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div>Loading chart data...</div>
+          <div>Loading day chart data...</div>
+        )}
+      </Container>
+      <Container>
+        {todayHrCountPoints && todayHrCountPoints.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              width={500}
+              height={300}
+              data={todayHrCountPoints}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="hour" interval={1} />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="count" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div>Loading today chart data...</div>
         )}
       </Container>
     </>
