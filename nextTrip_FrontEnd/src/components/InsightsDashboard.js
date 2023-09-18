@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  Label,
 } from "recharts";
 
 import { apiKey } from "../keys.js";
@@ -71,10 +72,8 @@ export default function InsightsDashboard() {
       heatMapDataPointsToSet[0].hasOwnProperty("weight")
     ) {
       heatMapDataPointsToSet.sort((a, b) => b.weight - a.weight);
-      console.log("heatMapDataPointsToSet sorted", heatMapDataPointsToSet);
       const topFiveLocationsToSet = heatMapDataPointsToSet.slice(0, 5);
       setTopFiveLocations(topFiveLocationsToSet);
-      console.log("topFiveLocations", topFiveLocations);
     } else {
       console.error("heatmapDataPoints is not an array.");
     }
@@ -352,11 +351,28 @@ export default function InsightsDashboard() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" interval={1} />
-              <YAxis />
+              <XAxis dataKey="hour" interval={1}>
+                <Label
+                  value="Hour (24 hr format)"
+                  offset={-2}
+                  position="insideBottom"
+                />
+              </XAxis>
+              <YAxis
+                label={{
+                  value: "Number of rides",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
               <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              <Legend verticalAlign="top" height={36} />
+              <Line
+                name="Rides frequency by hour"
+                type="monotone"
+                dataKey="count"
+                stroke="#8884d8"
+              />
             </LineChart>
           </ResponsiveContainer>
         ) : (
@@ -378,11 +394,27 @@ export default function InsightsDashboard() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="weekday" />
-              <YAxis />
+              <XAxis dataKey="weekday">
+                <Label
+                  value="Day of the week"
+                  offset={-2}
+                  position="insideBottom"
+                />
+              </XAxis>
+              <YAxis
+                label={{
+                  value: "Number of rides",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
               <Tooltip />
-              <Legend />
-              <Bar dataKey="count" fill="#8884d8" />
+              <Legend verticalAlign="top" height={36} />
+              <Bar
+                name="Ride frequency by weekday"
+                dataKey="count"
+                fill="#8884d8"
+              />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -404,11 +436,28 @@ export default function InsightsDashboard() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" interval={1} />
-              <YAxis />
+              <XAxis dataKey="hour" interval={1}>
+                <Label
+                  value="Hour (24 hr format)"
+                  offset={-2}
+                  position="insideBottom"
+                />
+              </XAxis>
+              <YAxis
+                label={{
+                  value: "Number of rides",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
               <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="count" stroke="#8884d8" />
+              <Legend verticalAlign="top" height={36} />
+              <Line
+                name="Rides frequency by hour for Today"
+                type="monotone"
+                dataKey="count"
+                stroke="#8884d8"
+              />
             </LineChart>
           </ResponsiveContainer>
         ) : (
