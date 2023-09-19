@@ -2,25 +2,21 @@ import axios from "axios";
 
 import { apiKey } from "../../keys";
 
-const fetchPredictedDestinationAddress = async (
-  predictedLan,
-  predictedLon,
-  setPredictedAddress
-) => {
+export async function fetchAddress(lan, lon, setAddress) {
   try {
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${predictedLan},${predictedLon}&key=${apiKey}`;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lan},${lon}&key=${apiKey}`;
 
     const response = await axios.get(apiUrl);
 
     if (response.data.results.length > 0) {
-      setPredictedAddress(response.data.results[0].formatted_address);
+      setAddress(response.data.results[0].formatted_address);
     } else {
-      setPredictedAddress("Address not found");
+      setAddress("Address not found");
     }
   } catch (error) {
-    setPredictedAddress("Error fetching address");
+    setAddress("Error fetching address");
   }
-};
+}
 
 export async function predictDestination(
   predictedLan,
@@ -46,11 +42,7 @@ export async function predictDestination(
         setPredictedLon(response.data.predicted_lon);
       });
 
-    fetchPredictedDestinationAddress(
-      predictedLan,
-      predictedLon,
-      setPredictedAddress
-    );
+    fetchAddress(predictedLan, predictedLon, setPredictedAddress);
   } catch (error) {
     console.log("err :", error);
   }

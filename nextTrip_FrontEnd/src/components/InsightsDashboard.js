@@ -5,8 +5,8 @@ import {
   useJsApiLoader,
   HeatmapLayerF,
   MarkerF,
+  InfoWindowF,
 } from "@react-google-maps/api";
-
 import {
   LineChart,
   Line,
@@ -23,6 +23,8 @@ import {
 
 import { apiKey } from "../keys.js";
 import { Container } from "semantic-ui-react";
+import { predictDestination, fetchAddress } from "./utils/locationApi.js";
+import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 
 const containerStyle = {
   width: "300px",
@@ -50,6 +52,13 @@ export default function InsightsDashboard() {
   const [todayHrCountPoints, setTodayHrCountPoints] = useState();
 
   const [topFiveLocations, setTopFiveLocations] = useState();
+
+  const [currentLan, setCurrentLan] = useState(0);
+  const [currentLon, setCurrentLon] = useState(0);
+  const [showPredictedAddressInfo, setShowPredictedAddressInfo] =
+    useState(false);
+  const [showAddressInfo, setShowAddressInfo] = useState(false);
+  const [clickedMarkerIndex, setClickedMarkerIndex] = useState(null);
 
   // HeatMap
 
@@ -150,6 +159,28 @@ export default function InsightsDashboard() {
   //   Lat: item.Lat,
   //   Lon: item.Lon,
   // }));
+
+  // predicted location marker
+  const [predictedLan, setPredictedLan] = useState();
+  const [predictedLon, setPredictedLon] = useState();
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    // Initial data fetch
+    predictDestination(
+      predictedLan,
+      predictedLon,
+      setPredictedLan,
+      setPredictedLon,
+      setAddress
+    );
+
+    // Fetch data every hour
+    const intervalId = setInterval(predictDestination, 3600000);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   //Stats by Hour
 
@@ -287,8 +318,34 @@ export default function InsightsDashboard() {
     }));
     setTodayHrCountPoints(modifiedHourlyCount);
   };
+  const [openJorneySelected, setOpenJorneySelected] = useState(false);
+  const [destinationLan, setdestinationLan] = useState();
+  const [destinationLon, setdestinationLon] = useState();
 
-  const handleMarkerClicked = () => {};
+  const openMapJourney = async (destinationLan, destinationLon) => {
+    setOpenJorneySelected(true);
+    setdestinationLan(destinationLan);
+    setdestinationLon(destinationLon);
+
+    openJourney(destinationLan, destinationLon, currentLan, currentLon);
+    console.log("currentLan ", currentLan, " currentLon ", currentLon);
+  };
+
+  useEffect(() => {
+    fetchCurrentLocation(setCurrentLan, setCurrentLon);
+  }, []);
+
+  const showPredictedAddress = (lat, lon) => {
+    fetchAddress(lat, lon, setAddress);
+    setShowPredictedAddressInfo(true);
+  };
+
+  const showLocationAddress = (index, lat, lon) => {
+    setClickedMarkerIndex(index);
+    setShowPredictedAddressInfo(false);
+    fetchAddress(lat, lon, setAddress);
+    setShowAddressInfo(true);
+  };
 
   return (
     <>
@@ -320,10 +377,65 @@ export default function InsightsDashboard() {
                           fillColor: "#89CFF0",
                         }}
                         label={"location " + (index + 1)}
-                        onClick={handleMarkerClicked()}
-                      />
+                        onDblClick={() =>
+                          openMapJourney(
+                            currentLocation.location.lat(),
+                            currentLocation.location.lng()
+                          )
+                        }
+                        onClick={() =>
+                          showLocationAddress(
+                            index,
+                            currentLocation.location.lat(),
+                            currentLocation.location.lng()
+                          )
+                        }
+                      >
+                        {showAddressInfo && clickedMarkerIndex == index && (
+                          <InfoWindowF position={currentLocation.location}>
+                            <h4>{address}</h4>
+                          </InfoWindowF>
+                        )}
+                      </MarkerF>
                     </>
                   ))
+                ) : (
+                  <div>Loading top 5 locations data...</div>
+                )}
+                {predictedLan && predictedLon ? (
+                  <MarkerF
+                    position={
+                      new window.google.maps.LatLng(predictedLan, predictedLon)
+                    }
+                    icon={{
+                      scale: 3,
+                      path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                      strokeColor: "#0047AB",
+                      strokeWeight: 2.5,
+                      fillOpacity: 10,
+                      fillColor: "#0047AB",
+                    }}
+                    label={"Predicted Location"}
+                    onDblClick={() =>
+                      openMapJourney(predictedLan, predictedLon)
+                    }
+                    onClick={() =>
+                      showPredictedAddress(predictedLan, predictedLon)
+                    }
+                  >
+                    {showPredictedAddressInfo && (
+                      <InfoWindowF
+                        position={
+                          new window.google.maps.LatLng(
+                            predictedLan,
+                            predictedLon
+                          )
+                        }
+                      >
+                        <h4>{address}</h4>
+                      </InfoWindowF>
+                    )}
+                  </MarkerF>
                 ) : (
                   <div>Loading top 5 locations data...</div>
                 )}
