@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Icon, Label, Container } from "semantic-ui-react";
-import { apiKey } from "../keys.js";
-import axios from "axios";
+
+import { predictDestination } from "./utils/locationApi.js";
 
 //todo : start journey when go to maps-> add new entry to db -> on cancel , remove new entry
 // update model every 1 hour
@@ -31,22 +31,6 @@ export const PredictedLocation = () => {
     }
   };
 
-  const fetchPredictedDestinationAddress = async () => {
-    try {
-      const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${predictedLan},${predictedLon}&key=${apiKey}`;
-
-      const response = await axios.get(apiUrl);
-
-      if (response.data.results.length > 0) {
-        setPredictedAddress(response.data.results[0].formatted_address);
-      } else {
-        setPredictedAddress("Address not found");
-      }
-    } catch (error) {
-      setPredictedAddress("Error fetching address");
-    }
-  };
-
   const openPredictedLocationJourney = () => {
     fetchCurrentLocation();
     const baseUrl = "https://www.google.com/maps/dir/";
@@ -55,59 +39,14 @@ export const PredictedLocation = () => {
     window.open(mapsUrl, "_blank");
   };
 
-  const predictDestination = async () => {
-    var today = new Date();
-    var weekday = today.getDay();
-    var hour = today.getHours();
-    const dateTime = { weekday, hour };
-
-    try {
-      const apiUrl = `http://localhost:5000/predict_location`;
-
-      const response = await axios
-        .post(apiUrl, JSON.stringify(dateTime), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((response) => {
-          // response.json().then((data) => {
-          //   setPredictedLan(data.predicted_lat[0]);
-          //   setPredictedLon(data.predicted_lon[0]);
-          // });
-
-          setPredictedLan(response.data.predicted_lat);
-          setPredictedLon(response.data.predicted_lon);
-        });
-
-      fetchPredictedDestinationAddress();
-    } catch (error) {
-      console.log("err :", error);
-    }
-  };
-
-  // const predictDestination = async () => {
-  //   var today = new Date();
-  //   var weekday = today.getDay();
-  //   var hour = today.getHours();
-  //   const dateTime = { weekday, hour };
-
-  //   await fetch("/predict_location", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(dateTime),
-  //   }).then((response) =>
-  //     response.json().then((data) => {
-  //       setPredictedLan(data.predicted_lat[0]);
-  //       setPredictedLon(data.predicted_lon[0]);
-  //     })
-  //   );
-
-  //   fetchPredictedDestinationAddress();
-  // };
-
   useEffect(() => {
-    predictDestination();
+    predictDestination(
+      predictedLan,
+      predictedLon,
+      setPredictedLan,
+      setPredictedLon,
+      setPredictedAddress
+    );
     fetchCurrentLocation();
   }, [predictedLan, predictedLon]);
 
