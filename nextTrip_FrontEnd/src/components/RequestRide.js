@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { MarkerF, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 
 import { googleMapsApiKey } from "../keys";
+import { fetchAddress } from "./utils/locationApi";
 
 const mapContainerStyle = {
   width: "300px",
@@ -15,13 +16,14 @@ const center = {
 };
 
 const RequestRide = () => {
-  const [location, setLocation] = useState();
+  const [pickupLocation, setPickupLocation] = useState();
+  const [pickupLocationAddress, setPickupLocationAddress] = useState();
   const [map, setMap] = useState(null);
   const initialZoom = 12;
   const markerRef = useRef(null);
 
   const handleLocationChange = (newLocation) => {
-    setLocation(newLocation);
+    setPickupLocation(newLocation);
   };
 
   const { isLoaded } = useJsApiLoader({
@@ -55,15 +57,25 @@ const RequestRide = () => {
     //   lat: markerRef.current.position.lat(),
     //   lng: markerRef.current.position.lng(),
     // });
-    setLocation(args[0].latLng);
+    setPickupLocation(args[0].latLng);
   }
   useEffect(() => {
     if (isLoaded) {
       let newyork = new window.google.maps.LatLng(center.lat, center.lng);
-      setLocation(newyork);
-      console.log("location ", location);
+      setPickupLocation(newyork);
+      console.log("location ", pickupLocation);
     }
   }, [isLoaded]);
+
+  useEffect(() => {
+    if (pickupLocation) {
+      fetchAddress(
+        pickupLocation.lat(),
+        pickupLocation.lng(),
+        setPickupLocationAddress
+      );
+    }
+  }, [pickupLocation]);
 
   return (
     <div>
@@ -82,9 +94,9 @@ const RequestRide = () => {
             fullscreenControl: false,
           }}
         >
-          {location && (
+          {pickupLocation && (
             <MarkerF
-              position={location}
+              position={pickupLocation}
               draggable
               onCursorChanged={handleLocationChange}
               onDrag={onDragEnd}
@@ -92,13 +104,17 @@ const RequestRide = () => {
           )}
         </GoogleMap>
       ) : (
-        <div></div>
+        <div>Loading map...</div>
       )}
 
-      {location && (
-        <p>
-          Selected location: {location.lat()}, {location.lng()}
-        </p>
+      {pickupLocation && (
+        <>
+          <p>
+            Selected pickup location: {pickupLocation.lat()},{" "}
+            {pickupLocation.lng()}
+          </p>
+          <p>Selected pickup location Address: {pickupLocationAddress}</p>
+        </>
       )}
     </div>
   );
