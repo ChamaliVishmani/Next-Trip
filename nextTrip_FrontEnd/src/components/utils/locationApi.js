@@ -1,10 +1,10 @@
 import axios from "axios";
 
-import { apiKey } from "../../keys";
+import { googleMapsApiKey } from "../../keys";
 
 export async function fetchAddress(lan, lon, setAddress) {
   try {
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lan},${lon}&key=${apiKey}`;
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lan},${lon}&key=${googleMapsApiKey}`;
 
     const response = await axios.get(apiUrl);
 

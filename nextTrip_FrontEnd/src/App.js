@@ -11,6 +11,7 @@ import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 import InsightsDashboard from "./components/InsightsDashboard.js";
+import LocationPicker from "./components/RequestRide";
 
 function getUserLoggedIn() {
   const role = sessionStorage.getItem("role");
@@ -67,6 +68,12 @@ function App() {
               path="/insights"
               element={
                 loggedInUserRole == "Driver" ? <InsightsDashboard /> : <Login />
+              }
+            />
+            <Route
+              path="/request_ride"
+              element={
+                loggedInUserRole == "Rider" ? <LocationPicker /> : <Login />
               }
             />
           </Routes>

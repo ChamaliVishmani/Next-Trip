@@ -21,7 +21,7 @@ import {
   Label,
 } from "recharts";
 
-import { apiKey } from "../keys.js";
+import { googleMapsApiKey } from "../keys.js";
 import { Container } from "semantic-ui-react";
 import {
   predictDestination,
@@ -33,7 +33,7 @@ import {
 } from "./utils/locationApi.js";
 import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 
-const containerStyle = {
+const mapContainerStyle = {
   width: "300px",
   height: "300px",
 };
@@ -74,7 +74,7 @@ export default function InsightsDashboard() {
   // HeatMap
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: apiKey,
+    googleMapsApiKey: googleMapsApiKey,
     libraries: ["visualization"],
   });
 
@@ -267,7 +267,7 @@ export default function InsightsDashboard() {
           <>
             {heatmapDataPoints && heatmapDataPoints.length > 0 ? (
               <GoogleMap
-                mapContainerStyle={containerStyle}
+                mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={initialZoom}
                 onLoad={onLoad}
