@@ -23,7 +23,14 @@ import {
 
 import { apiKey } from "../keys.js";
 import { Container } from "semantic-ui-react";
-import { predictDestination, fetchAddress } from "./utils/locationApi.js";
+import {
+  predictDestination,
+  fetchAddress,
+  setHeatMapDataPointsFunc,
+  getHeatMapData,
+  getTodayData,
+  getDayCountData,
+} from "./utils/locationApi.js";
 import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 
 const containerStyle = {
@@ -60,59 +67,11 @@ export default function InsightsDashboard() {
   const [showAddressInfo, setShowAddressInfo] = useState(false);
   const [clickedMarkerIndex, setClickedMarkerIndex] = useState(null);
 
+  const [predictedLan, setPredictedLan] = useState();
+  const [predictedLon, setPredictedLon] = useState();
+  const [address, setAddress] = useState("");
+
   // HeatMap
-
-  const setHeatMapDataPointsFunc = () => {
-    var heatMapDataPointsToSet = heatmapData.map(function (point) {
-      const location = new window.google.maps.LatLng(point.Lat, point.Lon);
-
-      return {
-        location: location,
-        weight: point.weight * 100,
-      };
-    });
-    setHeatMapDataPoints(heatMapDataPointsToSet);
-
-    // get top locations
-
-    if (
-      Array.isArray(heatMapDataPointsToSet) &&
-      heatMapDataPointsToSet.length > 0 &&
-      heatMapDataPointsToSet[0].hasOwnProperty("weight")
-    ) {
-      heatMapDataPointsToSet.sort((a, b) => b.weight - a.weight);
-      const topFiveLocationsToSet = heatMapDataPointsToSet.slice(0, 5);
-      setTopFiveLocations(topFiveLocationsToSet);
-    } else {
-      console.error("heatmapDataPoints is not an array.");
-    }
-  };
-
-  const getHeatMapData = async () => {
-    var today = new Date();
-    var weekday = today.getDay();
-    var hour = today.getHours();
-    const dateTime = { weekday, hour };
-
-    try {
-      const apiUrl = `http://localhost:5000/heatmap_data`;
-
-      const response = await axios
-        .post(apiUrl, JSON.stringify(dateTime), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((response) => {
-          const data = response.data.heatmap_data;
-          if (data) {
-            setHeatMapData(response.data.heatmap_data);
-            setHeatMapDataPointsFunc();
-          }
-        });
-    } catch (error) {
-      console.log("err :", error);
-    }
-  };
-
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: apiKey,
@@ -136,10 +95,23 @@ export default function InsightsDashboard() {
 
   useEffect(() => {
     // Initial data fetch
-    getHeatMapData();
+    getHeatMapData(
+      setHeatMapData,
+      heatmapData,
+      setHeatMapDataPoints,
+      setTopFiveLocations
+    );
 
     // Fetch data every hour
-    const intervalId = setInterval(getHeatMapData, 3600000);
+    const intervalId = setInterval(
+      getHeatMapData(
+        setHeatMapData,
+        heatmapData,
+        setHeatMapDataPoints,
+        setTopFiveLocations
+      ),
+      3600000
+    );
 
     // Cleanup the interval when the component unmounts
     return () => clearInterval(intervalId);
@@ -147,23 +119,15 @@ export default function InsightsDashboard() {
 
   useEffect(() => {
     if (heatmapData) {
-      setHeatMapDataPointsFunc();
+      setHeatMapDataPointsFunc(
+        heatmapData,
+        setHeatMapDataPoints,
+        setTopFiveLocations
+      );
     }
   }, [heatmapData]);
 
-  // Top 4 locations popup markers
-
-  // heatmapDataPoints.sort((a, b) => b.weight - a.weight);
-
-  // const topFiveLocations = heatmapDataPoints.slice(0, 5).map((item) => ({
-  //   Lat: item.Lat,
-  //   Lon: item.Lon,
-  // }));
-
   // predicted location marker
-  const [predictedLan, setPredictedLan] = useState();
-  const [predictedLon, setPredictedLon] = useState();
-  const [address, setAddress] = useState("");
 
   useEffect(() => {
     // Initial data fetch
@@ -185,14 +149,29 @@ export default function InsightsDashboard() {
   //Stats by Hour
 
   useEffect(() => {
-    getHourCountData();
-  }, []);
-
-  useEffect(() => {
     if (hourlyCount) {
       modifyHourlycountHours();
     }
   }, [hourlyCount]);
+
+  useEffect(() => {
+    getHourCountData();
+    getDayCountData(setDailyCount);
+    getTodayData(setTodayHrCount);
+    fetchCurrentLocation(setCurrentLan, setCurrentLon);
+  }, []);
+
+  useEffect(() => {
+    if (dailyCount) {
+      modifyDailycountHours();
+    }
+  }, [dailyCount]);
+
+  useEffect(() => {
+    if (todayHrCount) {
+      modifyTodayHrCount();
+    }
+  }, [todayHrCount]);
 
   const getHourCountData = async () => {
     try {
@@ -215,28 +194,6 @@ export default function InsightsDashboard() {
   };
 
   // Stats by day
-
-  useEffect(() => {
-    getDayCountData();
-  }, []);
-
-  useEffect(() => {
-    if (dailyCount) {
-      modifyDailycountHours();
-    }
-  }, [dailyCount]);
-
-  const getDayCountData = async () => {
-    try {
-      const apiUrl = `http://localhost:5000/count_data/by_day`;
-
-      const response = await axios.get(apiUrl).then((response) => {
-        setDailyCount(response.data.daycount_data);
-      });
-    } catch (error) {
-      console.log("err :", error);
-    }
-  };
 
   const modifyDailycountHours = () => {
     const modifiedDailyCount = dailyCount.map((dataPoint) => {
@@ -278,39 +235,6 @@ export default function InsightsDashboard() {
 
   // Stats for today
 
-  useEffect(() => {
-    getTodayData();
-  }, []);
-
-  useEffect(() => {
-    if (todayHrCount) {
-      modifyTodayHrCount();
-    }
-  }, [todayHrCount]);
-
-  const getTodayData = async () => {
-    var today = new Date();
-    var weekday = today.getDay();
-    const date = { weekday };
-
-    try {
-      const apiUrl = `http://localhost:5000/count_data/by_dayHr`;
-
-      const response = await axios
-        .post(apiUrl, JSON.stringify(date), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((response) => {
-          const data = response.data.dayHrcount_data;
-          if (data) {
-            setTodayHrCount(response.data.dayHrcount_data);
-          }
-        });
-    } catch (error) {
-      console.log("err :", error);
-    }
-  };
-
   const modifyTodayHrCount = () => {
     const modifiedHourlyCount = todayHrCount.map((dataPoint) => ({
       ...dataPoint,
@@ -318,22 +242,11 @@ export default function InsightsDashboard() {
     }));
     setTodayHrCountPoints(modifiedHourlyCount);
   };
-  const [openJorneySelected, setOpenJorneySelected] = useState(false);
-  const [destinationLan, setdestinationLan] = useState();
-  const [destinationLon, setdestinationLon] = useState();
 
   const openMapJourney = async (destinationLan, destinationLon) => {
-    setOpenJorneySelected(true);
-    setdestinationLan(destinationLan);
-    setdestinationLon(destinationLon);
-
     openJourney(destinationLan, destinationLon, currentLan, currentLon);
     console.log("currentLan ", currentLan, " currentLon ", currentLon);
   };
-
-  useEffect(() => {
-    fetchCurrentLocation(setCurrentLan, setCurrentLon);
-  }, []);
 
   const showPredictedAddress = (lat, lon) => {
     fetchAddress(lat, lon, setAddress);
