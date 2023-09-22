@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from . import db
 from .models import Movie
 import pandas as pd
-from . import latitude_model, logitude_model, heatmap_data, hourcount_data, daycount_data, dayHrcount_data
+from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data
 
 main = Blueprint('main', __name__)
 
@@ -62,8 +62,8 @@ def get_heatmap_data():
         new_weekday = data['weekday']
         new_hour = data['hour']
 
-        filtered_data = heatmap_data[(heatmap_data['weekday'] == new_weekday) & (
-            heatmap_data['hour'] == new_hour)]
+        filtered_data = heatmap_data_df[(heatmap_data_df['weekday'] == new_weekday) & (
+            heatmap_data_df['hour'] == new_hour)]
 
         response = filtered_data[['Lat', 'Lon', 'weight']].to_dict(
             orient='records')
