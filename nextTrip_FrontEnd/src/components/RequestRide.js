@@ -5,6 +5,7 @@ import { googleMapsApiKey } from "../keys";
 import { fetchAddress } from "./utils/locationApi";
 import { Button, Icon, Label } from "semantic-ui-react";
 import { fetchCurrentLocation } from "./utils/utils";
+import { updateRidesDB } from "./utils/ridesApi";
 
 const mapContainerStyle = {
   width: "300px",
@@ -28,6 +29,10 @@ const RequestRide = () => {
   const [map, setMap] = useState(null);
   const initialZoom = 12;
   const markerRef = useRef(null);
+
+  const handleRideRequest = () => {
+    updateRidesDB(pickupLocation.lat(), pickupLocation.lng());
+  };
 
   const handlePickupLocationChange = (newLocation) => {
     setPickupLocation(newLocation);
@@ -126,7 +131,7 @@ const RequestRide = () => {
             as="div"
             labelPosition="right"
           >
-            <Button icon>
+            <Button icon onClick={handleRideRequest}>
               <Icon name="location arrow" />
               Request Ride
             </Button>
