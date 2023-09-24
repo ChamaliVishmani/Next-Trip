@@ -24,7 +24,7 @@ function App() {
   const loggedInUserRole = getUserLoggedIn();
 
   return (
-    <div className="bg-blue-500 text-white p-4 shadow-md">
+    <div className="bg-blue-500 text-white p-4">
       <Helmet>
         <title>Next Trip</title>
       </Helmet>
