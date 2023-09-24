@@ -106,10 +106,10 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-400 text-white p-4 rounded-lg shadow-md">
-      <div className="h-max mx-auto flex flex-col items-center">
+    <div className="flex items-center justify-center h-screen bg-blue-400 text-white p-4 rounded-lg shadow-md overflow-auto min-h-screen">
+      <div className="h-max mx-auto flex flex-col items-center pt-20">
         <img
-          className="h-[150px] w-[150px] mb-5"
+          className="h-[150px] w-[150px] mb-0"
           src="https://png.pngtree.com/png-clipart/20191120/original/pngtree-boy-taxi-tuk-tuk-png-image_5044265.jpg?resize=400x0?color=indigo&shade=600"
           alt=""
         />
