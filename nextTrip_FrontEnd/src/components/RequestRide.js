@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MarkerF, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import { Button, Icon, Label } from "semantic-ui-react";
 
 import { googleMapsApiKey } from "../keys";
 import { fetchAddress } from "./utils/locationApi";
-import { Button, Icon, Label } from "semantic-ui-react";
 import { fetchCurrentLocation } from "./utils/utils";
 import { updateRidesDB } from "./utils/ridesApi";
 
@@ -26,11 +26,14 @@ const RequestRide = () => {
   const [currentLan, setCurrentLan] = useState(0);
   const [currentLon, setCurrentLon] = useState(0);
 
+  const [reqRidebuttonClicked, setReqRideButtonClicked] = useState(false);
+
   const [map, setMap] = useState(null);
   const initialZoom = 12;
   const markerRef = useRef(null);
 
   const handleRideRequest = () => {
+    setReqRideButtonClicked(true);
     updateRidesDB(pickupLocation.lat(), pickupLocation.lng());
   };
 
@@ -131,18 +134,30 @@ const RequestRide = () => {
             as="div"
             labelPosition="right"
           >
-            <Button icon onClick={handleRideRequest}>
+            <Button
+              icon
+              onClick={handleRideRequest}
+              style={{
+                backgroundColor: reqRidebuttonClicked ? "#32CD32" : "#ADD8E6",
+              }}
+            >
               <Icon name="location arrow" />
-              Request Ride
+              {reqRidebuttonClicked ? "Ride requested" : "Request Ride"}
             </Button>
             <Label as="a" basic pointing="left">
               <Button icon onClick={pickupLocationHandle}>
-                <Icon name="location arrow" />
-                Pickup: {pickupLocationAddress}
+                <div>
+                  <Icon name="map marker" />
+                </div>
+                <div>Pickup :</div>
+                {pickupLocationAddress}
               </Button>
               <Button icon onClick={destinationLocationHandle}>
-                <Icon name="location arrow" />
-                Destination: {destinationLocationAddress}
+                <div>
+                  <Icon name="map marker alternate" />
+                </div>
+                <div>Destination :</div>
+                {destinationLocationAddress}
               </Button>
             </Label>
           </Button>
