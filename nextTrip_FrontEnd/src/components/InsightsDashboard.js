@@ -34,7 +34,7 @@ import {
 import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 
 const mapContainerStyle = {
-  width: "300px",
+  width: "100%",
   height: "300px",
 };
 
@@ -260,235 +260,309 @@ export default function InsightsDashboard() {
     setShowAddressInfo(true);
   };
 
+  const tabs = {
+    heatMap: "heatMap",
+    todayInsights: "todayInsights",
+    dataInsights: "dataInsights",
+    account: "account",
+  };
+
+  const [selectedTab, setSelectedTab] = useState("heatMap");
+
+  const selectTabHandle = (tab) => {
+    const tabElements = document.querySelectorAll("button");
+    tabElements.forEach((tabElement) => {
+      tabElement.classList.remove("border-b-2", "border-blue-500");
+      tabElement.style.color = "gray";
+    });
+
+    const selectedTabElement = document.getElementById(`${tab}Tab`);
+    selectedTabElement.classList.add("border-b-2", "border-blue-500");
+    selectedTabElement.style.color = "blue";
+
+    setSelectedTab(tab);
+  };
+
   return (
     <>
-      <Container>
-        {isLoaded ? (
-          <>
-            {heatmapDataPoints && heatmapDataPoints.length > 0 ? (
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={center}
-                zoom={initialZoom}
-                onLoad={onLoad}
-                onUnmount={onUnmount}
-              >
-                <HeatmapLayerF data={heatmapDataPoints} />
-                {topFiveLocations && topFiveLocations.length > 0 ? (
-                  topFiveLocations.map((currentLocation, index) => (
-                    <>
-                      <MarkerF
-                        key={index}
-                        position={currentLocation.location}
-                        icon={{
-                          scale: 3,
-                          path: window.google.maps.SymbolPath
-                            .BACKWARD_CLOSED_ARROW,
-                          strokeColor: "#0047AB",
-                          strokeWeight: 2.5,
-                          fillOpacity: 10,
-                          fillColor: "#89CFF0",
-                        }}
-                        label={"location " + (index + 1)}
-                        onDblClick={() =>
-                          openMapJourney(
-                            currentLocation.location.lat(),
-                            currentLocation.location.lng()
-                          )
-                        }
-                        onClick={() =>
-                          showLocationAddress(
-                            index,
-                            currentLocation.location.lat(),
-                            currentLocation.location.lng()
-                          )
-                        }
-                      >
-                        {showAddressInfo && clickedMarkerIndex == index && (
-                          <InfoWindowF position={currentLocation.location}>
+      {selectedTab == tabs.heatMap && (
+        <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
+          {isLoaded ? (
+            <>
+              {heatmapDataPoints && heatmapDataPoints.length > 0 ? (
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={center}
+                  zoom={initialZoom}
+                  onLoad={onLoad}
+                  onUnmount={onUnmount}
+                >
+                  <HeatmapLayerF data={heatmapDataPoints} />
+                  {topFiveLocations && topFiveLocations.length > 0 ? (
+                    topFiveLocations.map((currentLocation, index) => (
+                      <>
+                        <MarkerF
+                          key={index}
+                          position={currentLocation.location}
+                          icon={{
+                            scale: 3,
+                            path: window.google.maps.SymbolPath
+                              .BACKWARD_CLOSED_ARROW,
+                            strokeColor: "#0047AB",
+                            strokeWeight: 2.5,
+                            fillOpacity: 10,
+                            fillColor: "#89CFF0",
+                          }}
+                          label={"location " + (index + 1)}
+                          onDblClick={() =>
+                            openMapJourney(
+                              currentLocation.location.lat(),
+                              currentLocation.location.lng()
+                            )
+                          }
+                          onClick={() =>
+                            showLocationAddress(
+                              index,
+                              currentLocation.location.lat(),
+                              currentLocation.location.lng()
+                            )
+                          }
+                        >
+                          {showAddressInfo && clickedMarkerIndex == index && (
+                            <InfoWindowF position={currentLocation.location}>
+                              <div className="info-window-content">
+                                <h4>{address}</h4>
+                              </div>
+                            </InfoWindowF>
+                          )}
+                        </MarkerF>
+                      </>
+                    ))
+                  ) : (
+                    <div>Loading top 5 locations data...</div>
+                  )}
+                  {predictedLan && predictedLon ? (
+                    <MarkerF
+                      position={
+                        new window.google.maps.LatLng(
+                          predictedLan,
+                          predictedLon
+                        )
+                      }
+                      icon={{
+                        scale: 3,
+                        path: window.google.maps.SymbolPath
+                          .BACKWARD_CLOSED_ARROW,
+                        strokeColor: "#0047AB",
+                        strokeWeight: 2.5,
+                        fillOpacity: 10,
+                        fillColor: "#0047AB",
+                      }}
+                      label={"Predicted Location"}
+                      onDblClick={() =>
+                        openMapJourney(predictedLan, predictedLon)
+                      }
+                      onClick={() =>
+                        showPredictedAddress(predictedLan, predictedLon)
+                      }
+                    >
+                      {showPredictedAddressInfo && (
+                        <InfoWindowF
+                          position={
+                            new window.google.maps.LatLng(
+                              predictedLan,
+                              predictedLon
+                            )
+                          }
+                        >
+                          <div className="info-window-content">
                             <h4>{address}</h4>
-                          </InfoWindowF>
-                        )}
-                      </MarkerF>
-                    </>
-                  ))
-                ) : (
-                  <div>Loading top 5 locations data...</div>
-                )}
-                {predictedLan && predictedLon ? (
-                  <MarkerF
-                    position={
-                      new window.google.maps.LatLng(predictedLan, predictedLon)
-                    }
-                    icon={{
-                      scale: 3,
-                      path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                      strokeColor: "#0047AB",
-                      strokeWeight: 2.5,
-                      fillOpacity: 10,
-                      fillColor: "#0047AB",
+                          </div>
+                        </InfoWindowF>
+                      )}
+                    </MarkerF>
+                  ) : (
+                    <div>Loading top 5 locations data...</div>
+                  )}
+                </GoogleMap>
+              ) : (
+                <div>Loading heatmap data...</div>
+              )}
+            </>
+          ) : (
+            <div>Loading...</div>
+          )}
+        </div>
+      )}
+      {selectedTab == tabs.dataInsights && (
+        <>
+          <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
+            {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  width={500}
+                  height={300}
+                  data={hourlyCountPoints}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                  style={{ background: "#fff" }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hour" interval={1}>
+                    <Label
+                      value="Hour (24 hr format)"
+                      offset={-2}
+                      position="insideBottom"
+                    />
+                  </XAxis>
+                  <YAxis
+                    label={{
+                      value: "Number of rides",
+                      angle: -90,
+                      position: "insideLeft",
                     }}
-                    label={"Predicted Location"}
-                    onDblClick={() =>
-                      openMapJourney(predictedLan, predictedLon)
-                    }
-                    onClick={() =>
-                      showPredictedAddress(predictedLan, predictedLon)
-                    }
-                  >
-                    {showPredictedAddressInfo && (
-                      <InfoWindowF
-                        position={
-                          new window.google.maps.LatLng(
-                            predictedLan,
-                            predictedLon
-                          )
-                        }
-                      >
-                        <h4>{address}</h4>
-                      </InfoWindowF>
-                    )}
-                  </MarkerF>
-                ) : (
-                  <div>Loading top 5 locations data...</div>
-                )}
-              </GoogleMap>
+                  />
+                  <Tooltip />
+                  <Legend verticalAlign="top" height={36} />
+                  <Line
+                    name="Rides frequency by hour"
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#8884d8"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             ) : (
-              <div>Loading heatmap data...</div>
+              <div>Loading hourly chart data...</div>
             )}
-          </>
-        ) : (
-          <div>Loading...</div>
-        )}
-      </Container>
-      <Container>
-        {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              width={500}
-              height={300}
-              data={hourlyCountPoints}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" interval={1}>
-                <Label
-                  value="Hour (24 hr format)"
-                  offset={-2}
-                  position="insideBottom"
-                />
-              </XAxis>
-              <YAxis
-                label={{
-                  value: "Number of rides",
-                  angle: -90,
-                  position: "insideLeft",
+          </div>
+          <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
+            {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  width={500}
+                  height={300}
+                  data={dailyCountPoints}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                  style={{ background: "#fff" }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="weekday">
+                    <Label
+                      value="Day of the week"
+                      offset={-2}
+                      position="insideBottom"
+                    />
+                  </XAxis>
+                  <YAxis
+                    label={{
+                      value: "Number of rides",
+                      angle: -90,
+                      position: "insideLeft",
+                    }}
+                  />
+                  <Tooltip />
+                  <Legend verticalAlign="top" height={36} />
+                  <Bar
+                    name="Ride frequency by weekday"
+                    dataKey="count"
+                    fill="#8884d8"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div>Loading day chart data...</div>
+            )}
+          </div>
+        </>
+      )}
+      {selectedTab == tabs.todayInsights && (
+        <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
+          {todayHrCountPoints && todayHrCountPoints.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                width={500}
+                height={300}
+                data={todayHrCountPoints}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
                 }}
-              />
-              <Tooltip />
-              <Legend verticalAlign="top" height={36} />
-              <Line
-                name="Rides frequency by hour"
-                type="monotone"
-                dataKey="count"
-                stroke="#8884d8"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div>Loading hourly chart data...</div>
-        )}
-      </Container>
-      <Container>
-        {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              width={500}
-              height={300}
-              data={dailyCountPoints}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="weekday">
-                <Label
-                  value="Day of the week"
-                  offset={-2}
-                  position="insideBottom"
+                style={{ background: "#fff" }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="hour" interval={1}>
+                  <Label
+                    value="Hour (24 hr format)"
+                    offset={-2}
+                    position="insideBottom"
+                  />
+                </XAxis>
+                <YAxis
+                  label={{
+                    value: "Number of rides",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
-              </XAxis>
-              <YAxis
-                label={{
-                  value: "Number of rides",
-                  angle: -90,
-                  position: "insideLeft",
-                }}
-              />
-              <Tooltip />
-              <Legend verticalAlign="top" height={36} />
-              <Bar
-                name="Ride frequency by weekday"
-                dataKey="count"
-                fill="#8884d8"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <div>Loading day chart data...</div>
-        )}
-      </Container>
-      <Container>
-        {todayHrCountPoints && todayHrCountPoints.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              width={500}
-              height={300}
-              data={todayHrCountPoints}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" interval={1}>
-                <Label
-                  value="Hour (24 hr format)"
-                  offset={-2}
-                  position="insideBottom"
+                <Tooltip />
+                <Legend verticalAlign="top" height={36} />
+                <Line
+                  name="Rides frequency by hour for Today"
+                  type="monotone"
+                  dataKey="count"
+                  stroke="#8884d8"
                 />
-              </XAxis>
-              <YAxis
-                label={{
-                  value: "Number of rides",
-                  angle: -90,
-                  position: "insideLeft",
-                }}
-              />
-              <Tooltip />
-              <Legend verticalAlign="top" height={36} />
-              <Line
-                name="Rides frequency by hour for Today"
-                type="monotone"
-                dataKey="count"
-                stroke="#8884d8"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <div>Loading today chart data...</div>
-        )}
-      </Container>
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div>Loading today chart data...</div>
+          )}
+        </div>
+      )}
+      <div class="bg-white">
+        <nav class="flex">
+          <button
+            id="heatMapTab"
+            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 border-b-2 font-medium border-blue-500"
+            onClick={() => selectTabHandle(tabs.heatMap)}
+          >
+            Heat Map / Locations
+          </button>
+          <button
+            id="todayInsightsTab"
+            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+            onClick={() => selectTabHandle(tabs.todayInsights)}
+          >
+            Today's Insights
+          </button>
+          <button
+            id="dataInsightsTab"
+            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+            onClick={() => selectTabHandle(tabs.dataInsights)}
+          >
+            Data Insights
+          </button>
+          <button
+            id="accountTab"
+            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+            onClick={() => selectTabHandle(tabs.account)}
+          >
+            Account
+          </button>
+        </nav>
+      </div>
     </>
   );
 }

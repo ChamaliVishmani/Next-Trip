@@ -10,6 +10,10 @@ body {
   padding: 0;
 }
 
+.info-window-content {
+  color: #000 !important; /* Set the desired text color */
+}
+
 /* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
