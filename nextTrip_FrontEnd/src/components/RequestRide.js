@@ -147,16 +147,18 @@ const RequestRide = () => {
             <Label as="a" basic pointing="left">
               <Button icon onClick={pickupLocationHandle}>
                 <div>
-                  <Icon name="map marker" />
+                  <Icon name="map marker alternate" />
                 </div>
-                <div>Pickup :</div>
+                <div className="rounded-lg  bg-gray-200 p-1 mb-1">Pickup:</div>
                 {pickupLocationAddress}
               </Button>
               <Button icon onClick={destinationLocationHandle}>
                 <div>
-                  <Icon name="map marker alternate" />
+                  <Icon name="map marker " />
                 </div>
-                <div>Destination :</div>
+                <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                  Destination:
+                </div>
                 {destinationLocationAddress}
               </Button>
             </Label>
