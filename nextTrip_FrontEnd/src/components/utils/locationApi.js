@@ -1,15 +1,14 @@
 import axios from "axios";
 
-import { googleMapsApiKey } from "../../keys";
+import { positionStackAPIKey } from "../../keys";
 
 export async function fetchAddress(lan, lon, setAddress) {
   try {
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lan},${lon}&key=${googleMapsApiKey}`;
+    const apiUrl = `http://api.positionstack.com/v1/reverse?access_key=${positionStackAPIKey}&query=${lan},${lon}&limit=1`;
 
     const response = await axios.get(apiUrl);
-
-    if (response.data.results.length > 0) {
-      setAddress(response.data.results[0].formatted_address);
+    if (response.data.data.length > 0) {
+      setAddress(response.data.data[0].label);
     } else {
       setAddress("Address not found");
     }

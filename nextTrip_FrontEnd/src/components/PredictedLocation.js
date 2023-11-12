@@ -29,7 +29,7 @@ export const PredictedLocation = () => {
     );
 
     fetchCurrentLocation(setCurrentLan, setCurrentLon);
-  }, [predictedLan, predictedLon]);
+  }, []);
 
   const tabs = {
     heatMap: "heatMap",
