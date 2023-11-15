@@ -4,6 +4,7 @@ import { positionStackAPIKey } from "../../keys";
 
 export async function fetchAddress(lan, lon, setAddress) {
   try {
+    console.log("lan sent to address :", lan, "lon sent to address :", lon);
     const apiUrl = `http://api.positionstack.com/v1/reverse?access_key=${positionStackAPIKey}&query=${lan},${lon}&limit=1`;
 
     const response = await axios.get(apiUrl);
@@ -30,7 +31,7 @@ export async function predictDestination(
   const dateTime = { weekday, hour };
 
   try {
-    const apiUrl = `http://localhost:5000/predict_location`;
+    const apiUrl = `http://localhost:5000/predict_location/allLocations`;
 
     const response = await axios
       .post(apiUrl, JSON.stringify(dateTime), {

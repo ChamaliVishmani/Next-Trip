@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from . import db
 from .models import Movie
 import pandas as pd
-from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data
+from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data, kmeans_model
 
 main = Blueprint('main', __name__)
 
@@ -30,8 +30,8 @@ main = Blueprint('main', __name__)
 #     return jsonify({'movies': movies})
 
 
-@main.route('/predict_location', methods=['POST'])
-def predict_location():
+@main.route('/predict_location/allLocations', methods=['POST'])
+def predict_location_all():
     try:
         data = request.get_json()
 
@@ -45,6 +45,32 @@ def predict_location():
         # Convert to list if necessary
         response = {'predicted_lat': predicted_lat.tolist(
         ), 'predicted_lon': predicted_lon.tolist()}
+
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@main.route('/predict_location/closeLocations', methods=['POST'])
+def predict_location_close():
+    try:
+        data = request.get_json()
+
+        new_weekday = data['weekday']
+        new_hour = data['hour']
+        lat = data['lat']
+        lon = data['lon']
+
+        new_cluster = kmeans_model.predict([[lat, lon]])[0]
+
+        # new_X = pd.DataFrame({'weekday': [new_weekday], 'hour': [new_hour]})
+        # predicted_lat = latitude_model.predict(new_X)
+        # predicted_lon = logitude_model.predict(new_X)
+
+        # # Convert to list if necessary
+        # response = {'predicted_lat': predicted_lat.tolist(
+        # ), 'predicted_lon': predicted_lon.tolist()}
+        response = {'predicted_lat': "new_cluster"}
 
         return jsonify(response), 200
     except Exception as e:
