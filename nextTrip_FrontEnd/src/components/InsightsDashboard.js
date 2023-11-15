@@ -30,6 +30,7 @@ import {
   getTodayData,
   getDayCountData,
   predictDestinationAll,
+  predictDestinationHere,
 } from "./utils/locationApi.js";
 import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 import { Link } from "react-router-dom";
@@ -39,11 +40,11 @@ const mapContainerStyle = {
   height: "300px",
 };
 
-const center = {
-  // New York Coordinates
-  lat: 40.7128,
-  lng: -74.006,
-};
+// const center = {
+//   // New York Coordinates
+//   lat: 40.7128,
+//   lng: -74.006,
+// };
 
 export default function InsightsDashboard() {
   const [heatmapData, setHeatMapData] = useState();
@@ -65,11 +66,15 @@ export default function InsightsDashboard() {
   const [currentLon, setCurrentLon] = useState(0);
   const [showPredictedAddressInfo, setShowPredictedAddressInfo] =
     useState(false);
+  const [showPredictedAddressInfoHere, setShowPredictedAddressInfoHere] =
+    useState(false);
   const [showAddressInfo, setShowAddressInfo] = useState(false);
   const [clickedMarkerIndex, setClickedMarkerIndex] = useState(null);
 
   const [predictedLan, setPredictedLan] = useState();
   const [predictedLon, setPredictedLon] = useState();
+  const [predictedLanHere, setPredictedLanHere] = useState();
+  const [predictedLonHere, setPredictedLonHere] = useState();
   const [address, setAddress] = useState("");
 
   // HeatMap
@@ -93,6 +98,11 @@ export default function InsightsDashboard() {
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
+
+  const center = {
+    lat: currentLan,
+    lng: currentLon,
+  };
 
   useEffect(() => {
     // Initial data fetch
@@ -133,6 +143,20 @@ export default function InsightsDashboard() {
   useEffect(() => {
     // Initial data fetch
     predictDestinationAll(setPredictedLan, setPredictedLon);
+    predictDestinationHere(
+      currentLan,
+      currentLon,
+      setPredictedLanHere,
+      setPredictedLonHere
+    );
+    {
+      console.log(
+        "predictedLanHere ",
+        predictedLanHere,
+        " predictedLonHere ",
+        predictedLonHere
+      );
+    }
 
     // Fetch data every hour
     const intervalId = setInterval(predictDestinationAll, 3600000);
@@ -250,11 +274,19 @@ export default function InsightsDashboard() {
   const showPredictedAddress = (lat, lon) => {
     fetchAddress(lat, lon, setAddress);
     setShowPredictedAddressInfo(true);
+    setShowPredictedAddressInfoHere(false);
+  };
+
+  const showPredictedAddressHere = (lat, lon) => {
+    fetchAddress(lat, lon, setAddress);
+    setShowPredictedAddressInfoHere(true);
+    setShowPredictedAddressInfo(false);
   };
 
   const showLocationAddress = (index, lat, lon) => {
     setClickedMarkerIndex(index);
     setShowPredictedAddressInfo(false);
+    setShowPredictedAddressInfoHere(false);
     fetchAddress(lat, lon, setAddress);
     setShowAddressInfo(true);
   };
@@ -416,7 +448,72 @@ export default function InsightsDashboard() {
                         )}
                       </MarkerF>
                     ) : (
-                      <div>Loading top 5 locations data...</div>
+                      <div>Loading predicted location data...</div>
+                    )}
+                    {predictedLanHere && predictedLonHere ? (
+                      <MarkerF
+                        position={
+                          new window.google.maps.LatLng(
+                            predictedLanHere,
+                            predictedLonHere
+                          )
+                        }
+                        icon={{
+                          scale: 3,
+                          path: window.google.maps.SymbolPath
+                            .BACKWARD_CLOSED_ARROW,
+                          strokeColor: "#0047AB",
+                          strokeWeight: 2.5,
+                          fillOpacity: 10,
+                          fillColor: "#0047AB",
+                        }}
+                        label={"Predicted Location For Here"}
+                        onDblClick={() =>
+                          openMapJourney(predictedLanHere, predictedLonHere)
+                        }
+                        onClick={() =>
+                          showPredictedAddressHere(
+                            predictedLanHere,
+                            predictedLonHere
+                          )
+                        }
+                      >
+                        {showPredictedAddressInfoHere && (
+                          <InfoWindowF
+                            position={
+                              new window.google.maps.LatLng(
+                                predictedLanHere,
+                                predictedLonHere
+                              )
+                            }
+                          >
+                            <div className="info-window-content">
+                              <h4>{address}</h4>
+                            </div>
+                          </InfoWindowF>
+                        )}
+                      </MarkerF>
+                    ) : (
+                      <div>Loading predicted location for here data...</div>
+                    )}
+                    {currentLan && currentLon ? (
+                      <MarkerF
+                        position={
+                          new window.google.maps.LatLng(currentLan, currentLon)
+                        }
+                        icon={{
+                          scale: 3,
+                          path: window.google.maps.SymbolPath
+                            .BACKWARD_CLOSED_ARROW,
+                          strokeColor: "#0047AB",
+                          strokeWeight: 2.5,
+                          fillOpacity: 10,
+                          fillColor: "#0047AB",
+                        }}
+                        label={"Current Location"}
+                      ></MarkerF>
+                    ) : (
+                      <div>Loading current location data...</div>
                     )}
                   </GoogleMap>
                 ) : (
