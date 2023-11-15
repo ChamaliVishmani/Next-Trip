@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+import joblib
 from . import db
 from .models import Movie
 import pandas as pd
@@ -62,15 +63,15 @@ def predict_location_close():
         lon = data['lon']
 
         new_cluster = kmeans_model.predict([[lat, lon]])[0]
+        predicted_model = joblib.load(
+            "./models/clusters/cluster_{}_model.pkl".format(new_cluster))
+        predicted_cluster = predicted_model.predict(
+            [[new_weekday, new_hour]])[0]
+        cluster_centroid = kmeans_model.cluster_centers_[predicted_cluster]
+        predicted_latitude, predicted_longitude = cluster_centroid[0], cluster_centroid[1]
 
-        # new_X = pd.DataFrame({'weekday': [new_weekday], 'hour': [new_hour]})
-        # predicted_lat = latitude_model.predict(new_X)
-        # predicted_lon = logitude_model.predict(new_X)
-
-        # # Convert to list if necessary
-        # response = {'predicted_lat': predicted_lat.tolist(
-        # ), 'predicted_lon': predicted_lon.tolist()}
-        response = {'predicted_lat': "new_cluster"}
+        response = {'predicted_lat': predicted_latitude,
+                    'predicted_lon': predicted_longitude}
 
         return jsonify(response), 200
     except Exception as e:
