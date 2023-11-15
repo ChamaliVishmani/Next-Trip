@@ -24,12 +24,12 @@ import {
 import { googleMapsApiKey } from "../keys.js";
 import { Container } from "semantic-ui-react";
 import {
-  predictDestination,
   fetchAddress,
   setHeatMapDataPointsFunc,
   getHeatMapData,
   getTodayData,
   getDayCountData,
+  predictDestinationAll,
 } from "./utils/locationApi.js";
 import { openJourney, fetchCurrentLocation } from "./utils/utils.js";
 import { Link } from "react-router-dom";
@@ -132,20 +132,18 @@ export default function InsightsDashboard() {
 
   useEffect(() => {
     // Initial data fetch
-    predictDestination(
-      predictedLan,
-      predictedLon,
-      setPredictedLan,
-      setPredictedLon,
-      setAddress
-    );
+    predictDestinationAll(setPredictedLan, setPredictedLon);
 
     // Fetch data every hour
-    const intervalId = setInterval(predictDestination, 3600000);
+    const intervalId = setInterval(predictDestinationAll, 3600000);
 
     // Cleanup the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    fetchAddress(predictedLan, predictedLon, setAddress);
+  }, [predictedLan, predictedLon]);
 
   //Stats by Hour
 

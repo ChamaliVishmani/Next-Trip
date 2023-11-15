@@ -18,13 +18,7 @@ export async function fetchAddress(lan, lon, setAddress) {
   }
 }
 
-export async function predictDestination(
-  predictedLan,
-  predictedLon,
-  setPredictedLan,
-  setPredictedLon,
-  setPredictedAddress
-) {
+export async function predictDestinationAll(setPredictedLan, setPredictedLon) {
   var today = new Date();
   var weekday = today.getDay();
   var hour = today.getHours();
@@ -41,8 +35,35 @@ export async function predictDestination(
         setPredictedLan(response.data.predicted_lat);
         setPredictedLon(response.data.predicted_lon);
       });
+  } catch (error) {
+    console.log("err :", error);
+  }
+}
 
-    fetchAddress(predictedLan, predictedLon, setPredictedAddress);
+export async function predictDestinationHere(
+  currentLan,
+  currentLon,
+  setPredictedLan,
+  setPredictedLon
+) {
+  var today = new Date();
+  var weekday = today.getDay();
+  var hour = today.getHours();
+  var lat = currentLan;
+  var lon = currentLon;
+  const requestBody = { weekday, hour, lat, lon };
+
+  try {
+    const apiUrl = `http://localhost:5000/predict_location/closeLocations`;
+
+    const response = await axios
+      .post(apiUrl, JSON.stringify(requestBody), {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        setPredictedLan(response.data.predicted_lat);
+        setPredictedLon(response.data.predicted_lon);
+      });
   } catch (error) {
     console.log("err :", error);
   }
