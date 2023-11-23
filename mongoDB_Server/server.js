@@ -1,9 +1,11 @@
-import { DB_URL } from "./config/db.config.js";
 import express, { json, urlencoded } from "express";
 import cors from "cors";
+
+import { DB_URL } from "./config/db.config.js";
 import db from "./models/index.js";
 import setupAuthRoutes from "./routes/auth.routes.js";
 import setupUserRoutes from "./routes/user.routes.js";
+import setupRidesRoutes from "./routes/ride.routes.js";
 
 const app = express();
 
@@ -41,6 +43,7 @@ app.get("/", (req, res) => {
 
 setupAuthRoutes(app);
 setupUserRoutes(app);
+setupRidesRoutes(app);
 
 const PORT = process.env.PORT || 8080;
 

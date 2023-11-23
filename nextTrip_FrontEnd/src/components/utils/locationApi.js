@@ -1,15 +1,15 @@
 import axios from "axios";
 
-import { apiKey } from "../../keys";
+import { positionStackAPIKey } from "../../keys";
 
 export async function fetchAddress(lan, lon, setAddress) {
   try {
-    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lan},${lon}&key=${apiKey}`;
+    console.log("lan sent to address :", lan, "lon sent to address :", lon);
+    const apiUrl = `http://api.positionstack.com/v1/reverse?access_key=${positionStackAPIKey}&query=${lan},${lon}&limit=1`;
 
     const response = await axios.get(apiUrl);
-
-    if (response.data.results.length > 0) {
-      setAddress(response.data.results[0].formatted_address);
+    if (response.data.data.length > 0) {
+      setAddress(response.data.data[0].label);
     } else {
       setAddress("Address not found");
     }
@@ -18,20 +18,14 @@ export async function fetchAddress(lan, lon, setAddress) {
   }
 }
 
-export async function predictDestination(
-  predictedLan,
-  predictedLon,
-  setPredictedLan,
-  setPredictedLon,
-  setPredictedAddress
-) {
+export async function predictDestinationAll(setPredictedLan, setPredictedLon) {
   var today = new Date();
   var weekday = today.getDay();
   var hour = today.getHours();
   const dateTime = { weekday, hour };
 
   try {
-    const apiUrl = `http://localhost:5000/predict_location`;
+    const apiUrl = `http://localhost:5000/predict_location/allLocations`;
 
     const response = await axios
       .post(apiUrl, JSON.stringify(dateTime), {
@@ -41,8 +35,35 @@ export async function predictDestination(
         setPredictedLan(response.data.predicted_lat);
         setPredictedLon(response.data.predicted_lon);
       });
+  } catch (error) {
+    console.log("err :", error);
+  }
+}
 
-    fetchAddress(predictedLan, predictedLon, setPredictedAddress);
+export async function predictDestinationHere(
+  currentLan,
+  currentLon,
+  setPredictedLan,
+  setPredictedLon
+) {
+  var today = new Date();
+  var weekday = today.getDay();
+  var hour = today.getHours();
+  var lat = currentLan;
+  var lon = currentLon;
+  const requestBody = { weekday, hour, lat, lon };
+
+  try {
+    const apiUrl = `http://localhost:5000/predict_location/closeLocations`;
+
+    const response = await axios
+      .post(apiUrl, JSON.stringify(requestBody), {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        setPredictedLan(response.data.predicted_lat);
+        setPredictedLon(response.data.predicted_lon);
+      });
   } catch (error) {
     console.log("err :", error);
   }

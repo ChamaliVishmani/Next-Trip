@@ -22,7 +22,7 @@ export async function openJourney(
   currentLan,
   currentLon
 ) {
-  const baseUrl = "https://www.google.com/maps/dir/";
+  const baseUrl = "http://www.google.com/maps/dir/";
   console.log(
     "currentLan ",
     currentLan,
