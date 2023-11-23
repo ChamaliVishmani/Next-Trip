@@ -1,5 +1,6 @@
 import { secret } from "../config/auth.config.js";
 import db from "../models/index.js";
+
 const User = db.user;
 const Role = db.role;
 

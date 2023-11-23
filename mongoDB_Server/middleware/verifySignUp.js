@@ -1,4 +1,5 @@
 import db from "../models/index.js";
+
 const ROLES = db.ROLES;
 const User = db.user;
 
