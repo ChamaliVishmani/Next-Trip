@@ -35,7 +35,14 @@ const RequestRide = () => {
   const handleRideRequest = () => {
     setReqRideButtonClicked(true);
     updateRidesDB(pickupLocation.lat(), pickupLocation.lng());
-    requestRide(pickupLocation.lat(), pickupLocation.lng());
+    requestRide(
+      pickupLocation.lat(),
+      pickupLocation.lng(),
+      destinationLocation.lat(),
+      destinationLocation.lng(),
+      sessionStorage.getItem("userName")
+    );
+    // console.log("userName :", userName);
   };
 
   const handlePickupLocationChange = (newLocation) => {

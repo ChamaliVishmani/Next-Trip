@@ -25,20 +25,28 @@ export async function updateRidesDB(pickupLan, pickupLon) {
   }
 }
 
-export async function requestRide(pickupLan, pickupLon) {
+export async function requestRide(
+  pickupLan,
+  pickupLon,
+  destinationLan,
+  destinationLon,
+  userName
+) {
   const now = new Date();
-
   const formattedDate = `${
     now.getMonth() + 1
   }/${now.getDate()}/${now.getFullYear()}`;
   const formattedTime = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-
   const dateTime = `${formattedDate} ${formattedTime}`;
 
-  const lat = pickupLan;
-  const lon = pickupLon;
-
-  const requestBody = { dateTime, lat, lon };
+  const requestBody = {
+    dateTime,
+    pickupLan,
+    pickupLon,
+    destinationLan,
+    destinationLon,
+    userName,
+  };
 
   try {
     const apiUrl = `http://localhost:5000/ride/request`;

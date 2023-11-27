@@ -10,7 +10,8 @@ import Dashboard from "./components/InsightsDashboard.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 import InsightsDashboard from "./components/InsightsDashboard.js";
-import LocationPicker from "./components/RequestRide";
+// import LocationPicker from "./components/RequestRide";
+import RequestRide from "./components/RequestRide.js";
 import RideRequests from "./components/RideRequests.js";
 
 function getUserLoggedIn() {
@@ -22,6 +23,7 @@ function App() {
   // const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [userType, setUserType] = useState("all");
   const loggedInUserRole = getUserLoggedIn();
+  const [userName, setUserName] = useState("");
 
   return (
     <div className="bg-blue-500 text-white p-4">
@@ -36,7 +38,7 @@ function App() {
             path=""
             element={
               <SnackbarProvider maxSnack={3}>
-                <Login setUserType={setUserType} />
+                <Login />
               </SnackbarProvider>
             }
           />
@@ -44,7 +46,7 @@ function App() {
             path="/login"
             element={
               <SnackbarProvider maxSnack={3}>
-                <Login setUserType={setUserType} />
+                <Login />
               </SnackbarProvider>
             }
           />
@@ -71,9 +73,7 @@ function App() {
           />
           <Route
             path="/request_ride"
-            element={
-              loggedInUserRole == "Rider" ? <LocationPicker /> : <Login />
-            }
+            element={loggedInUserRole == "Rider" ? <RequestRide /> : <Login />}
           />
         </Routes>
       </BrowserRouter>

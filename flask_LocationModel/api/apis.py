@@ -128,12 +128,12 @@ def request_ride():
     try:
         data = request.get_json()
 
-        # if 'weekday' not in data:
-        #     return jsonify({'error': 'Missing parameters weekday'}), 400
-
         dateTime = data['dateTime']
-        lat = data['lat']
-        lon = data['lon']
+        pickupLan = data['pickupLan'],
+        pickupLon = data['pickupLon'],
+        destinationLan = data['destinationLan'],
+        destinationLon = data['destinationLon'],
+        userName = data['userName']
 
         socketio.emit('new_ride_request', data)
 
