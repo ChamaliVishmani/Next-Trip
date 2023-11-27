@@ -134,10 +134,35 @@ def request_ride():
         destinationLan = data['destinationLan'],
         destinationLon = data['destinationLon'],
         userName = data['userName']
+        accepted = data['accepted']
 
         socketio.emit('new_ride_request', data)
 
-        return jsonify({'dayHrcount_data': dateTime}), 200
+        return 'Request ride', 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@main.route('/ride/accept', methods=['POST'])
+def accept_ride():
+    try:
+        data = request.get_json()
+
+        dateTime = data['dateTime']
+        pickupLan = data['pickupLan'],
+        pickupLon = data['pickupLon'],
+        destinationLan = data['destinationLan'],
+        destinationLon = data['destinationLon'],
+        userName = data['userName']
+        driverName = data['driverName']
+        driverLan = data['driverLan']
+        driverLon = data['driverLon']
+        accepted = data['accepted']
+
+        socketio.emit('ride_accept', data)
+
+        return 'Accept ride', 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400

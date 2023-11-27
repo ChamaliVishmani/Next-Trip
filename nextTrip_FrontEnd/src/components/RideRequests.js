@@ -5,6 +5,7 @@ import io from "socket.io-client";
 
 import { fetchAddress } from "./utils/locationApi";
 import { fetchCurrentLocation, openJourney } from "./utils/utils";
+import { acceptRide } from "./utils/ridesApi";
 
 const socket = io("http://localhost:5000");
 
@@ -63,10 +64,30 @@ export default function RideRequests() {
     }
   }, [newRequestReceived]);
 
-  const handleAcceptClick = (index, destLan, destLon) => {
+  const handleAcceptClick = (
+    index,
+    pickupLan,
+    pickupLon,
+    destLan,
+    destLon,
+    riderName,
+    driverName,
+    driverLan,
+    driverLon
+  ) => {
     setReqRideButtonClicked(true);
     setRideAccepted(index);
-    openJourney(destLan, destLon, currentLan, currentLon);
+    acceptRide(
+      pickupLan,
+      pickupLon,
+      destLan,
+      destLon,
+      riderName,
+      driverName,
+      driverLan,
+      driverLon
+    );
+    openJourney(destLan, destLon, driverLan, driverLon);
   };
 
   const tabs = {
@@ -168,7 +189,20 @@ export default function RideRequests() {
               >
                 <Button
                   icon
-                  onClick={() => handleAcceptClick(index)}
+                  onClick={() =>
+                    handleAcceptClick(
+                      index,
+                      request.pickupLan,
+                      request.pickupLon,
+                      request.destinationLan,
+                      request.destinationLon,
+                      request.userName,
+                      sessionStorage.getItem("userName"),
+                      currentLan,
+                      currentLon
+                    )
+                  }
+                  driverLon
                   style={{
                     backgroundColor:
                       reqRidebuttonClicked && rideAccepted === index

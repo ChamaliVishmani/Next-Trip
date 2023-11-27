@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MarkerF, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { Button, Icon, Label } from "semantic-ui-react";
+import io from "socket.io-client";
 
 import { googleMapsApiKey } from "../keys";
 import { fetchAddress } from "./utils/locationApi";
@@ -27,23 +28,70 @@ const RequestRide = () => {
   const [currentLon, setCurrentLon] = useState(0);
 
   const [reqRidebuttonClicked, setReqRideButtonClicked] = useState(false);
+  const [rideAccepted, setRideAccepted] = useState(false);
+  const [rideAcceptedData, setRideAcceptedData] = useState(null);
 
   const [map, setMap] = useState(null);
   const initialZoom = 12;
   const markerRef = useRef(null);
 
+  const [requestedRide, setRequestedRide] = useState(false);
+
+  const socket = io("http://localhost:5000");
+
+  useEffect(() => {
+    //listen to ride accept
+    socket.on("ride_accept", async (data) => {
+      console.log("ride accept data :", data);
+
+      const requestedRideStored = JSON.parse(
+        sessionStorage.getItem("requestedRide")
+      );
+      console.log("ride request data :", requestedRideStored);
+      if (
+        data.accepted &&
+        requestedRideStored &&
+        data.userName === sessionStorage.getItem("userName") &&
+        data.pickupLan === requestedRideStored.pickupLocation.lat &&
+        data.pickupLon === requestedRideStored.pickupLocation.lng &&
+        data.destinationLan === requestedRideStored.destinationLocation.lat &&
+        data.destinationLon === requestedRideStored.destinationLocation.lng
+      ) {
+        setRideAccepted(true);
+        setRideAcceptedData(data);
+        console.log("ride accepted");
+      }
+    });
+    // Clean up event listener on component unmount
+    return () => {
+      socket.off("ride_accept");
+    };
+  }, []);
+
   const handleRideRequest = () => {
-    setReqRideButtonClicked(true);
-    updateRidesDB(pickupLocation.lat(), pickupLocation.lng());
-    requestRide(
-      pickupLocation.lat(),
-      pickupLocation.lng(),
-      destinationLocation.lat(),
-      destinationLocation.lng(),
-      sessionStorage.getItem("userName")
-    );
-    // console.log("userName :", userName);
+    if (!reqRidebuttonClicked) {
+      setReqRideButtonClicked(true);
+      updateRidesDB(pickupLocation.lat(), pickupLocation.lng());
+      requestRide(
+        pickupLocation.lat(),
+        pickupLocation.lng(),
+        destinationLocation.lat(),
+        destinationLocation.lng(),
+        sessionStorage.getItem("userName")
+      );
+      setRequestedRide({
+        pickupLocation,
+        destinationLocation,
+        userName: sessionStorage.getItem("userName"),
+      });
+    }
   };
+
+  useEffect(() => {
+    if (requestedRide && setReqRideButtonClicked) {
+      sessionStorage.setItem("requestedRide", JSON.stringify(requestedRide));
+    }
+  }, [requestedRide]);
 
   const handlePickupLocationChange = (newLocation) => {
     setPickupLocation(newLocation);
@@ -89,11 +137,15 @@ const RequestRide = () => {
   }, []);
 
   function onPickupDragEnd(...args) {
-    setPickupLocation(args[0].latLng);
+    if (!reqRidebuttonClicked) {
+      setPickupLocation(args[0].latLng);
+    }
   }
 
   function onDestinationDragEnd(...args) {
-    setDestinationLocation(args[0].latLng);
+    if (!reqRidebuttonClicked) {
+      setDestinationLocation(args[0].latLng);
+    }
   }
 
   useEffect(() => {
@@ -146,7 +198,8 @@ const RequestRide = () => {
               icon
               onClick={handleRideRequest}
               style={{
-                backgroundColor: reqRidebuttonClicked ? "#32CD32" : "#ADD8E6",
+                backgroundColor:
+                  reqRidebuttonClicked && !rideAccepted ? "#32CD32" : "#ADD8E6",
               }}
             >
               <Icon name="location arrow" />
@@ -174,7 +227,45 @@ const RequestRide = () => {
         </div>
       )}
 
-      {showPickupMap && (
+      {isLoaded && rideAccepted && (
+        <div class="bg-white rounded-lg mt-4 p-0 text-black">
+          <Button
+            style={{ margin: "0", padding: "0" }}
+            as="div"
+            labelPosition="right"
+          >
+            <Button
+              icon
+              style={{
+                backgroundColor: "#32CD32",
+              }}
+            >
+              <Icon name="location arrow" />
+              Ride accepted
+            </Button>
+            <Label as="a" basic pointing="left">
+              <Button icon>
+                <div>
+                  <Icon name="map marker alternate" />
+                </div>
+                <div className="rounded-lg  bg-gray-200 p-1 mb-1">Driver:</div>
+                {rideAcceptedData.driverName}
+              </Button>
+              <Button icon>
+                <div>
+                  <Icon name="map marker " />
+                </div>
+                <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                  Driver Location:
+                </div>
+                {rideAcceptedData.driverLan}, {rideAcceptedData.driverLon}
+              </Button>
+            </Label>
+          </Button>
+        </div>
+      )}
+
+      {showPickupMap && !reqRidebuttonClicked && (
         <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2 flex-col">
           <div className="mb-2 flex-col text-xl font-bold ">
             Set your pickup location
@@ -209,7 +300,7 @@ const RequestRide = () => {
         </div>
       )}
 
-      {showDestinationpMap && (
+      {showDestinationpMap && !reqRidebuttonClicked && (
         <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2 flex-col">
           <div className="mb-2 flex-col text-xl font-bold ">
             Set your destination
