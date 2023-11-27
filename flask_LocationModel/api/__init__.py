@@ -35,7 +35,7 @@ def create_app():
     db.init_app(app)
     CORS(app)
 
-    socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="*")
 
     from .apis import main
     app.register_blueprint(main)

@@ -7,11 +7,11 @@ import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
 import "./App.css";
 import { PredictedLocation } from "./components/PredictedLocation.js";
 import Dashboard from "./components/InsightsDashboard.js";
-import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 import InsightsDashboard from "./components/InsightsDashboard.js";
 import LocationPicker from "./components/RequestRide";
+import RideRequests from "./components/RideRequests.js";
 
 function getUserLoggedIn() {
   const role = sessionStorage.getItem("role");
@@ -56,7 +56,7 @@ function App() {
               </SnackbarProvider>
             }
           />
-          <Route path="/preferences" element={<Preferences />} />
+          <Route path="/preferences" element={<RideRequests />} />
           <Route
             path="/predict_location"
             element={
