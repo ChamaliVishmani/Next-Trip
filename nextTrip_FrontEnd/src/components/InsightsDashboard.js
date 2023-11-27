@@ -296,6 +296,7 @@ export default function InsightsDashboard() {
     todayInsights: "todayInsights",
     dataInsights: "dataInsights",
     driverMain: "driverMain",
+    rideRequests: "rideRequests",
   };
 
   const [selectedTab, setSelectedTab] = useState("heatMap");

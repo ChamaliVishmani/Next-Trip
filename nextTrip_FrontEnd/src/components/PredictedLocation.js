@@ -60,6 +60,7 @@ export const PredictedLocation = () => {
     dataInsights: "dataInsights",
     account: "account",
     driverMain: "driverMain",
+    rideRequests: "rideRequests",
   };
 
   const [selectedTab, setSelectedTab] = useState("heatMap");
@@ -89,6 +90,15 @@ export const PredictedLocation = () => {
           >
             Home
           </button>
+          <Link to="/rideRequests">
+            <button
+              id="rideRequestsTab"
+              class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+              onClick={() => selectTabHandle(tabs.rideRequests)}
+            >
+              Ride Requests
+            </button>
+          </Link>
           <Link to="/insights">
             <button
               id="todayInsightsTab"

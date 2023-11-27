@@ -46,6 +46,7 @@ export async function requestRide(
     destinationLan,
     destinationLon,
     userName,
+    accepted: false,
   };
 
   try {

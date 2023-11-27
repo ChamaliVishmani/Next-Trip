@@ -58,7 +58,7 @@ function App() {
               </SnackbarProvider>
             }
           />
-          <Route path="/preferences" element={<RideRequests />} />
+          <Route path="/rideRequests" element={<RideRequests />} />
           <Route
             path="/predict_location"
             element={
