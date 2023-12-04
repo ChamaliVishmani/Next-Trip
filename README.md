@@ -1,6 +1,6 @@
 # Next Trip
 
-CO3554 Data management project
+A WEB APPLICATION FOR TAXI DRIVERS TO DETERMINE BEST LOCATIONS AND TIMES TO BE AVAILABLE
 
 # run backend
 
@@ -44,7 +44,7 @@ npm start
 ```
 NextTrip
 ├─ .git
-│  ---
+│  ├─
 ├─ .gitattributes
 ├─ .gitignore
 ├─ .vscode
@@ -54,20 +54,57 @@ NextTrip
 │  ├─ .vscode
 │  │  └─ settings.json
 │  ├─ api
-│  │  ├─ models.py
-│  │  ├─ views.py
-│  │  └─ __init__.py
+│  │  ├─ apis.py
+│  │  ├─ app.py
+│  │  ├─ trainModels.py
+│  │  ├─ __init__.py
+│  │  └─ __pycache__
+│  │     ├─ apis.cpython-310.pyc
+│  │     ├─ models.cpython-310.pyc
+│  │     └─ __init__.cpython-310.pyc
+│  ├─ config
+│  │  ├─ db_config.py
+│  │  ├─ __init__.py
+│  │  └─ __pycache__
+│  │     ├─ db_config.cpython-310.pyc
+│  │     └─ __init__.cpython-310.pyc
+│  ├─ data
+│  │  ├─ daycount_data.csv
+│  │  ├─ dayHrcount_data.csv
+│  │  ├─ heatmap_data.csv
+│  │  ├─ hourcount_data.csv
+│  │  └─ uber-raw-data-apr14.csv
+│  ├─ env
+│  │  ├─
 │  ├─ instance
-│  │  └─ database.db
+│  ├─ models
+│  │  ├─ clusters
+│  │  │  ├─ cluster_0_model.pkl
+│  │  │  ├─ cluster_10_model.pkl
+│  │  │  ├─
+│  │  │  ├─ cluster_99_model.pkl
+│  │  │  └─ cluster_9_model.pkl
+│  │  ├─ kmeans_model.pkl
+│  │  ├─ lat_model.pkl
+│  │  ├─ lon_model.pkl
+│  │  └─ rnd_columns.pkl
 │  ├─ notebooks
 │  │  ├─ .ipynb_checkpoints
 │  │  │  └─ Lat_Lon_Model-checkpoint.ipynb
 │  │  ├─ dataCSVToMongo.ipynb
 │  │  ├─ Lat_Lon_Model.ipynb
-│  │  └─ Maps_Model.ipynb
+│  │  ├─ locationClusters.ipynb
+│  │  ├─ Maps_Model.ipynb
+│  │  └─ notebookScripts
+│  │     ├─ Lat_Lon_ModelScript.py
+│  │     ├─ LocationClustersScript.py
+│  │     └─ Maps_ModelScript.py
 │  ├─ package-lock.json
 │  └─ requirements.txt
 ├─ mongoDB_Server
+│  ├─ config
+│  │  ├─ auth.config.js
+│  │  └─ db.config.js
 │  ├─ controllers
 │  │  ├─ auth.controller.js
 │  │  ├─ rides.controller.js
@@ -80,6 +117,8 @@ NextTrip
 │  │  ├─ rider.model.js
 │  │  ├─ role.models.js
 │  │  └─ user.model.js
+│  ├─ node_modules
+│  │  ├─
 │  ├─ package-lock.json
 │  ├─ package.json
 │  ├─ routes
@@ -89,6 +128,8 @@ NextTrip
 │  └─ server.js
 ├─ nextTrip_FrontEnd
 │  ├─ .gitignore
+│  ├─ node_modules
+│  │  ├─
 │  ├─ package-lock.json
 │  ├─ package.json
 │  ├─ public
@@ -107,10 +148,9 @@ NextTrip
 │  │  │  ├─ Login
 │  │  │  │  ├─ login.css
 │  │  │  │  └─ login.js
-│  │  │  ├─ Movies.js
 │  │  │  ├─ PredictedLocation.js
-│  │  │  ├─ Preferences.js
 │  │  │  ├─ RequestRide.js
+│  │  │  ├─ RideRequests.js
 │  │  │  ├─ SignUp
 │  │  │  │  ├─ signUp.css
 │  │  │  │  └─ signUp.js
@@ -121,8 +161,11 @@ NextTrip
 │  │  │     ├─ userContent.js
 │  │  │     └─ utils.js
 │  │  ├─ index.css
-│  │  └─ index.js
+│  │  ├─ index.js
+│  │  └─ keys.js
 │  └─ tailwind.config.js
+├─ Pipfile
+├─ Pipfile.lock
 └─ README.md
 
 ```
