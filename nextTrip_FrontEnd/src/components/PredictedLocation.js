@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Icon, Label, Container } from "semantic-ui-react";
+import { Button, Icon, Label } from "semantic-ui-react";
 
 import {
   fetchAddress,
@@ -8,9 +8,6 @@ import {
 } from "./utils/locationApi.js";
 import { fetchCurrentLocation, openJourney } from "./utils/utils.js";
 import { Link } from "react-router-dom";
-
-//todo : start journey when go to maps-> add new entry to db -> on cancel , remove new entry
-// update model every 1 hour
 
 export const PredictedLocation = () => {
   const [predictedLanAll, setPredictedLanAll] = useState(0);
@@ -60,6 +57,7 @@ export const PredictedLocation = () => {
     dataInsights: "dataInsights",
     account: "account",
     driverMain: "driverMain",
+    rideRequests: "rideRequests",
   };
 
   const [selectedTab, setSelectedTab] = useState("heatMap");
@@ -87,8 +85,17 @@ export const PredictedLocation = () => {
             class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 border-b-2 font-medium border-blue-500"
             onClick={() => selectTabHandle(tabs.driverMain)}
           >
-            Home
+            Predicted Location
           </button>
+          <Link to="/rideRequests">
+            <button
+              id="rideRequestsTab"
+              class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+              onClick={() => selectTabHandle(tabs.rideRequests)}
+            >
+              Ride Requests
+            </button>
+          </Link>
           <Link to="/insights">
             <button
               id="todayInsightsTab"

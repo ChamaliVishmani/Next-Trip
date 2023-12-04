@@ -1,34 +1,10 @@
 from flask import Blueprint, jsonify, request
 import joblib
-from . import db
-from .models import Movie
 import pandas as pd
-from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data, kmeans_model
+
+from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data, kmeans_model, socketio
 
 main = Blueprint('main', __name__)
-
-
-# @main.route('/add_movie', methods=['POST'])
-# def add_movie():
-#     movie_data = request.get_json()
-
-#     new_movie = Movie(title=movie_data['title'], rating=movie_data['rating'])
-
-#     db.session.add(new_movie)
-#     db.session.commit()
-
-#     return 'Done', 201
-
-
-# @main.route('/movies')
-# def movies():
-#     movies_list = Movie.query.all()
-#     movies = []
-
-#     for movie in movies_list:
-#         movies.append({'title': movie.title, 'rating': movie.rating})
-
-#     return jsonify({'movies': movies})
 
 
 @main.route('/predict_location/allLocations', methods=['POST'])
@@ -142,6 +118,51 @@ def get_count_data_dayHr():
             orient='records')
 
         return jsonify({'dayHrcount_data': response}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@main.route('/ride/request', methods=['POST'])
+def request_ride():
+    try:
+        data = request.get_json()
+
+        dateTime = data['dateTime']
+        pickupLan = data['pickupLan'],
+        pickupLon = data['pickupLon'],
+        destinationLan = data['destinationLan'],
+        destinationLon = data['destinationLon'],
+        userName = data['userName']
+        accepted = data['accepted']
+
+        socketio.emit('new_ride_request', data)
+
+        return 'Request ride', 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@main.route('/ride/accept', methods=['POST'])
+def accept_ride():
+    try:
+        data = request.get_json()
+
+        dateTime = data['dateTime']
+        pickupLan = data['pickupLan'],
+        pickupLon = data['pickupLon'],
+        destinationLan = data['destinationLan'],
+        destinationLon = data['destinationLon'],
+        userName = data['userName']
+        driverName = data['driverName']
+        driverLan = data['driverLan']
+        driverLon = data['driverLon']
+        accepted = data['accepted']
+
+        socketio.emit('ride_accept', data)
+
+        return 'Accept ride', 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400

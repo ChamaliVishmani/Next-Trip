@@ -31,6 +31,8 @@ export default function Login() {
         setAccessToken,
         enqueueSnackbar
       );
+
+      sessionStorage.setItem("userName", userName);
     } catch (error) {
       console.log("error :", error);
     }

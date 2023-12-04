@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Routes, json } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import { SnackbarProvider } from "notistack";
 
 import "./App.css";
 import { PredictedLocation } from "./components/PredictedLocation.js";
-import Dashboard from "./components/InsightsDashboard.js";
-import Preferences from "./components/Preferences.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 import InsightsDashboard from "./components/InsightsDashboard.js";
-import LocationPicker from "./components/RequestRide";
+import RequestRide from "./components/RequestRide.js";
+import RideRequests from "./components/RideRequests.js";
 
 function getUserLoggedIn() {
   const role = sessionStorage.getItem("role");
@@ -19,8 +17,6 @@ function getUserLoggedIn() {
 }
 
 function App() {
-  // const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [userType, setUserType] = useState("all");
   const loggedInUserRole = getUserLoggedIn();
 
   return (
@@ -36,7 +32,7 @@ function App() {
             path=""
             element={
               <SnackbarProvider maxSnack={3}>
-                <Login setUserType={setUserType} />
+                <Login />
               </SnackbarProvider>
             }
           />
@@ -44,7 +40,7 @@ function App() {
             path="/login"
             element={
               <SnackbarProvider maxSnack={3}>
-                <Login setUserType={setUserType} />
+                <Login />
               </SnackbarProvider>
             }
           />
@@ -56,7 +52,7 @@ function App() {
               </SnackbarProvider>
             }
           />
-          <Route path="/preferences" element={<Preferences />} />
+          <Route path="/rideRequests" element={<RideRequests />} />
           <Route
             path="/predict_location"
             element={
@@ -71,9 +67,7 @@ function App() {
           />
           <Route
             path="/request_ride"
-            element={
-              loggedInUserRole == "Rider" ? <LocationPicker /> : <Login />
-            }
+            element={loggedInUserRole == "Rider" ? <RequestRide /> : <Login />}
           />
         </Routes>
       </BrowserRouter>
