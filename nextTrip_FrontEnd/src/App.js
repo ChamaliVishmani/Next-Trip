@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { SnackbarProvider } from "notistack";
@@ -56,18 +56,18 @@ function App() {
           <Route
             path="/predict_location"
             element={
-              loggedInUserRole == "Driver" ? <PredictedLocation /> : <Login />
+              loggedInUserRole === "Driver" ? <PredictedLocation /> : <Login />
             }
           />
           <Route
             path="/insights"
             element={
-              loggedInUserRole == "Driver" ? <InsightsDashboard /> : <Login />
+              loggedInUserRole === "Driver" ? <InsightsDashboard /> : <Login />
             }
           />
           <Route
             path="/request_ride"
-            element={loggedInUserRole == "Rider" ? <RequestRide /> : <Login />}
+            element={loggedInUserRole === "Rider" ? <RequestRide /> : <Login />}
           />
         </Routes>
       </BrowserRouter>

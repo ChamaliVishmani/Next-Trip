@@ -142,14 +142,6 @@ export default function InsightsDashboard() {
       setPredictedLanHere,
       setPredictedLonHere
     );
-    {
-      console.log(
-        "predictedLanHere ",
-        predictedLanHere,
-        " predictedLonHere ",
-        predictedLonHere
-      );
-    }
 
     // Fetch data every hour
     const intervalId = setInterval(predictDestinationAll, 3600000);
@@ -347,7 +339,7 @@ export default function InsightsDashboard() {
             </button>
           </nav>
         </div>
-        {selectedTab == tabs.heatMap && (
+        {selectedTab === tabs.heatMap && (
           <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
             {isLoaded ? (
               <>
@@ -390,13 +382,16 @@ export default function InsightsDashboard() {
                               )
                             }
                           >
-                            {showAddressInfo && clickedMarkerIndex == index && (
-                              <InfoWindowF position={currentLocation.location}>
-                                <div className="info-window-content">
-                                  <h4>{address}</h4>
-                                </div>
-                              </InfoWindowF>
-                            )}
+                            {showAddressInfo &&
+                              clickedMarkerIndex === index && (
+                                <InfoWindowF
+                                  position={currentLocation.location}
+                                >
+                                  <div className="info-window-content">
+                                    <h4>{address}</h4>
+                                  </div>
+                                </InfoWindowF>
+                              )}
                           </MarkerF>
                         </>
                       ))
@@ -521,7 +516,7 @@ export default function InsightsDashboard() {
             )}
           </div>
         )}
-        {selectedTab == tabs.dataInsights && (
+        {selectedTab === tabs.dataInsights && (
           <>
             <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
               {hourlyCountPoints && hourlyCountPoints.length > 0 ? (
@@ -612,7 +607,7 @@ export default function InsightsDashboard() {
             </div>
           </>
         )}
-        {selectedTab == tabs.todayInsights && (
+        {selectedTab === tabs.todayInsights && (
           <div className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2">
             {todayHrCountPoints && todayHrCountPoints.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>

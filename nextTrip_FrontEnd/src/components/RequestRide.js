@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { MarkerF, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { Button, Icon, Label } from "semantic-ui-react";
 import io from "socket.io-client";
@@ -33,7 +33,7 @@ const RequestRide = () => {
   const [rideAccepted, setRideAccepted] = useState(false);
   const [rideAcceptedData, setRideAcceptedData] = useState(null);
 
-  const [map, setMap] = useState(null);
+  const [, setMap] = useState(null);
   const initialZoom = 12;
 
   const [requestedRide, setRequestedRide] = useState(false);

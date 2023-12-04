@@ -14,7 +14,7 @@ export default function RideRequests() {
   const [pickupAddress, setPickupAddress] = useState();
   const [destinationAddress, setDestinationAddress] = useState();
   const [rideAccepted, setRideAccepted] = useState(null);
-  const [selectedTab, setSelectedTab] = useState("rideRequests");
+  const [, setSelectedTab] = useState("rideRequests");
   const [reqRidebuttonClicked, setReqRideButtonClicked] = useState(false);
   const [newRequestReceived, setNewRequestReceived] = useState(false);
 

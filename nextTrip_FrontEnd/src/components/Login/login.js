@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState();
-  const [accessToken, setAccessToken] = useState("");
+  const [, setRole] = useState();
+  const [, setAccessToken] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
 

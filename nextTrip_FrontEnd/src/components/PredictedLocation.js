@@ -60,7 +60,7 @@ export const PredictedLocation = () => {
     rideRequests: "rideRequests",
   };
 
-  const [selectedTab, setSelectedTab] = useState("heatMap");
+  const [, setSelectedTab] = useState("heatMap");
 
   const selectTabHandle = (tab) => {
     const tabElements = document.querySelectorAll("button");
