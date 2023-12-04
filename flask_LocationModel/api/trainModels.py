@@ -45,7 +45,7 @@ def trainPeriodically():
 
 if __name__ == "__main__":
     # Run the training script every day at 2:00 AM
-    schedule.every().day.at("14:20").do(trainPeriodically)
+    schedule.every().day.at("02:00").do(trainPeriodically)
 
     while True:
         schedule.run_pending()

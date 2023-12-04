@@ -1,5 +1,3 @@
-// import { Route, Redirect } from "react-router-dom";
-
 import authJwt from "../middleware/authJwt.js";
 import {
   allAccess,
