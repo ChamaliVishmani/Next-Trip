@@ -123,7 +123,7 @@ export default function RideRequests() {
               class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
               onClick={() => selectTabHandle(tabs.driverMain)}
             >
-              Home
+              Predicted Location
             </button>
           </Link>
           <Link to="/rideRequests">
@@ -153,93 +153,96 @@ export default function RideRequests() {
           </button>
         </nav>
       </div>
-
-      <div>
-        {rideRequests.map((request, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-center bg-blue-400 text-white p-4 rounded-lg shadow-md m-2"
-          >
-            <div className="m-2">
-              <h3>Ride Request {index + 1}</h3>
-              <div>
-                <strong>Date and Time:</strong> {request.dateTime}
-              </div>
-              <div>
-                <strong>Destination Location:</strong>
+      <div className="p-1 flex justify-center ">
+        <div className=" flex-col ">
+          {rideRequests.map((request, index) => (
+            <div
+              key={index}
+              className=" items-center justify-center bg-blue-300 text-black rounded-lg flex-col mt-2"
+            >
+              <div className="p-2">
+                <h3>Ride Request {index + 1}</h3>
                 <div>
-                  {parseFloat(request.destinationLan).toFixed(3)},{"\n"}
-                  {parseFloat(request.destinationLon).toFixed(3)}
+                  <strong>Date and Time:</strong> {request.dateTime}
+                </div>
+                <div>
+                  <strong>Destination Location:</strong>
+                  <div>
+                    {parseFloat(request.destinationLan).toFixed(3)},{"\n"}
+                    {parseFloat(request.destinationLon).toFixed(3)}
+                  </div>
+                </div>
+                <div>
+                  <strong>Pickup Location:</strong>
+                  <div>
+                    {parseFloat(request.pickupLan).toFixed(3)},{"\n"}
+                    {parseFloat(request.pickupLon).toFixed(3)}
+                  </div>
+                </div>
+                <div>
+                  <strong>User Name:</strong> {request.userName}
+                </div>
+                <div className="flex-grow">
+                  <Button
+                    style={{ margin: 1, padding: 1 }}
+                    as="div"
+                    labelPosition="right"
+                  >
+                    <Button
+                      icon
+                      onClick={() =>
+                        handleAcceptClick(
+                          index,
+                          request.pickupLan,
+                          request.pickupLon,
+                          request.destinationLan,
+                          request.destinationLon,
+                          request.userName,
+                          sessionStorage.getItem("userName"),
+                          currentLan,
+                          currentLon
+                        )
+                      }
+                      driverLon
+                      style={{
+                        backgroundColor:
+                          reqRidebuttonClicked && rideAccepted === index
+                            ? "#32CD32"
+                            : "#ADD8E6",
+                      }}
+                    >
+                      <Icon name="location arrow" />
+                      {reqRidebuttonClicked && rideAccepted === index
+                        ? "Ride accepted"
+                        : "Accept Ride"}
+                    </Button>
+                    <Label as="a" basic pointing="left">
+                      <Button icon>
+                        <div>
+                          <Icon name="map marker alternate" />
+                        </div>
+                        <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                          Pickup:
+                        </div>
+                        {console.log("request :", request)}
+                        {request.requestPickupAddress}
+                      </Button>
+                      <Button icon>
+                        <div>
+                          <Icon name="map marker " />
+                        </div>
+                        <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                          Destination:
+                        </div>
+                        {request.requestDestinationAddress}
+                      </Button>
+                    </Label>
+                  </Button>
                 </div>
               </div>
-              <div>
-                <strong>Pickup Location:</strong>
-                <div>
-                  {parseFloat(request.pickupLan).toFixed(3)},{"\n"}
-                  {parseFloat(request.pickupLon).toFixed(3)}
-                </div>
-              </div>
-              <div>
-                <strong>User Name:</strong> {request.userName}
-              </div>
-              <Button
-                style={{ margin: "0", padding: "0" }}
-                as="div"
-                labelPosition="right"
-              >
-                <Button
-                  icon
-                  onClick={() =>
-                    handleAcceptClick(
-                      index,
-                      request.pickupLan,
-                      request.pickupLon,
-                      request.destinationLan,
-                      request.destinationLon,
-                      request.userName,
-                      sessionStorage.getItem("userName"),
-                      currentLan,
-                      currentLon
-                    )
-                  }
-                  driverLon
-                  style={{
-                    backgroundColor:
-                      reqRidebuttonClicked && rideAccepted === index
-                        ? "#32CD32"
-                        : "#ADD8E6",
-                  }}
-                >
-                  <Icon name="location arrow" />
-                  {reqRidebuttonClicked && rideAccepted === index
-                    ? "Ride accepted"
-                    : "Accept Ride"}
-                </Button>
-                <Label as="a" basic pointing="left">
-                  <Button icon>
-                    <div>
-                      <Icon name="map marker alternate" />
-                    </div>
-                    <div className="rounded-lg  bg-gray-200 p-1 mb-1">
-                      Pickup:
-                    </div>
-                    {console.log("request :", request)}
-                    {request.requestPickupAddress}
-                  </Button>
-                  <Button icon>
-                    <div>
-                      <Icon name="map marker " />
-                    </div>
-                    <div className="rounded-lg  bg-gray-200 p-1 mb-1">
-                      Destination:
-                    </div>
-                    {request.requestDestinationAddress}
-                  </Button>
-                </Label>
-              </Button>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

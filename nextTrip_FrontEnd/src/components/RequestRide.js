@@ -33,7 +33,6 @@ const RequestRide = () => {
 
   const [map, setMap] = useState(null);
   const initialZoom = 12;
-  const markerRef = useRef(null);
 
   const [requestedRide, setRequestedRide] = useState(false);
 

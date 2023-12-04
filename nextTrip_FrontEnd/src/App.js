@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Routes, json } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import { SnackbarProvider } from "notistack";
 
 import "./App.css";
 import { PredictedLocation } from "./components/PredictedLocation.js";
-import Dashboard from "./components/InsightsDashboard.js";
 import SignUp from "./components/SignUp/signUp.js";
 import Login from "./components/Login/login.js";
 import InsightsDashboard from "./components/InsightsDashboard.js";
-// import LocationPicker from "./components/RequestRide";
 import RequestRide from "./components/RequestRide.js";
 import RideRequests from "./components/RideRequests.js";
 
@@ -20,10 +17,7 @@ function getUserLoggedIn() {
 }
 
 function App() {
-  // const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [userType, setUserType] = useState("all");
   const loggedInUserRole = getUserLoggedIn();
-  const [userName, setUserName] = useState("");
 
   return (
     <div className="bg-blue-500 text-white p-4">
