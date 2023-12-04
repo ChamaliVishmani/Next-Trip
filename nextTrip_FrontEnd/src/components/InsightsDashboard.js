@@ -22,7 +22,6 @@ import {
 } from "recharts";
 
 import { googleMapsApiKey } from "../keys.js";
-import { Container } from "semantic-ui-react";
 import {
   fetchAddress,
   setHeatMapDataPointsFunc,
@@ -39,12 +38,6 @@ const mapContainerStyle = {
   width: "100%",
   height: "300px",
 };
-
-// const center = {
-//   // New York Coordinates
-//   lat: 40.7128,
-//   lng: -74.006,
-// };
 
 export default function InsightsDashboard() {
   const [heatmapData, setHeatMapData] = useState();
@@ -317,9 +310,20 @@ export default function InsightsDashboard() {
 
   return (
     <>
-      <div className="rounded-lg h-screen bg-blue-500 m-4">
-        <div className="bg-white rounded-lg">
-          <nav class="flex justify-between items-center">
+      <div className="rounded-lg  bg-blue-500">
+        <div>
+          <nav class="bg-white rounded-lg mb-2 w-1/3">
+            <Link to="/predict_location">
+              <button
+                id="driverMainTab"
+                class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
+                onClick={() => selectTabHandle(tabs.driverMain)}
+              >
+                Home
+              </button>
+            </Link>
+          </nav>
+          <nav class="flex bg-white rounded-lg ">
             <button
               id="heatMapTab"
               class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 border-b-2 font-medium border-blue-500"
@@ -341,15 +345,6 @@ export default function InsightsDashboard() {
             >
               Data Insights
             </button>
-            <Link to="/predict_location">
-              <button
-                id="driverMainTab"
-                class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
-                onClick={() => selectTabHandle(tabs.driverMain)}
-              >
-                Home
-              </button>
-            </Link>
           </nav>
         </div>
         {selectedTab == tabs.heatMap && (
