@@ -21,6 +21,8 @@ const RequestRide = () => {
   const [destinationLocationAddress, setDestinationLocationAddress] =
     useState();
 
+  const [driverAddress, setDriverAddress] = useState();
+
   const [showPickupMap, setShowPickupMap] = useState();
   const [showDestinationpMap, setShowDestinationMap] = useState();
 
@@ -184,46 +186,105 @@ const RequestRide = () => {
     }
   }, [destinationLocation]);
 
+  useEffect(() => {
+    if (
+      rideAccepted &&
+      rideAcceptedData.driverLan &&
+      rideAcceptedData.driverLon
+    ) {
+      fetchAddress(
+        rideAcceptedData.driverLan,
+        rideAcceptedData.driverLon,
+        setDriverAddress
+      );
+    }
+  }, [rideAccepted, rideAcceptedData]);
+
   return (
-    <div className="rounded-lg h-screen bg-blue-500 m-4">
+    <div className="rounded-lg h-screen bg-blue-500 m-4 ">
       {isLoaded && destinationLocation && pickupLocation && (
-        <div class="bg-white rounded-lg mt-4 p-0 text-black">
-          <Button
-            style={{ margin: "0", padding: "0" }}
-            as="div"
-            labelPosition="right"
-          >
+        <>
+          <div class="bg-white rounded-lg mt-4 p-0 text-black ">
             <Button
-              icon
-              onClick={handleRideRequest}
-              style={{
-                backgroundColor:
-                  reqRidebuttonClicked && !rideAccepted ? "#32CD32" : "#ADD8E6",
-              }}
+              style={{ margin: "0", padding: "0" }}
+              as="div"
+              labelPosition="right"
             >
-              <Icon name="location arrow" />
-              {reqRidebuttonClicked ? "Ride requested" : "Request Ride"}
+              <Button
+                icon
+                onClick={handleRideRequest}
+                style={{
+                  backgroundColor:
+                    reqRidebuttonClicked && !rideAccepted
+                      ? "#32CD32"
+                      : "#ADD8E6",
+                }}
+              >
+                <Icon name="location arrow" />
+                {reqRidebuttonClicked ? "Ride requested" : "Request Ride"}
+              </Button>
+              <Label as="a" basic pointing="left">
+                <Button icon onClick={pickupLocationHandle}>
+                  <div>
+                    <Icon name="map marker alternate" />
+                  </div>
+                  <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                    Pickup:
+                  </div>
+                  {pickupLocationAddress}
+                </Button>
+                <Button icon onClick={destinationLocationHandle}>
+                  <div>
+                    <Icon name="map marker " />
+                  </div>
+                  <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                    Destination:
+                  </div>
+                  {destinationLocationAddress}
+                </Button>
+              </Label>
             </Button>
-            <Label as="a" basic pointing="left">
-              <Button icon onClick={pickupLocationHandle}>
-                <div>
-                  <Icon name="map marker alternate" />
-                </div>
-                <div className="rounded-lg  bg-gray-200 p-1 mb-1">Pickup:</div>
-                {pickupLocationAddress}
+          </div>
+          <div class="bg-white rounded-lg mt-4 p-0 text-black ">
+            <Button
+              style={{ margin: "0", padding: "0" }}
+              as="div"
+              labelPosition="right"
+            >
+              <Button
+                icon
+                style={{
+                  backgroundColor: "#ADD8E6",
+                }}
+              >
+                <Icon name="location arrow" />
+                {"Coordinates:"}
               </Button>
-              <Button icon onClick={destinationLocationHandle}>
-                <div>
-                  <Icon name="map marker " />
-                </div>
-                <div className="rounded-lg  bg-gray-200 p-1 mb-1">
-                  Destination:
-                </div>
-                {destinationLocationAddress}
-              </Button>
-            </Label>
-          </Button>
-        </div>
+              <Label as="a" basic pointing="left">
+                <Button icon onClick={pickupLocationHandle}>
+                  <div>
+                    <Icon name="map marker alternate" />
+                  </div>
+                  <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                    Pickup:
+                  </div>
+                  {parseFloat(pickupLocation.lat()).toFixed(3)},{"\n"}
+                  {parseFloat(pickupLocation.lng()).toFixed(3)}
+                </Button>
+                <Button icon onClick={destinationLocationHandle}>
+                  <div>
+                    <Icon name="map marker " />
+                  </div>
+                  <div className="rounded-lg  bg-gray-200 p-1 mb-1">
+                    Destination:
+                  </div>
+                  {parseFloat(destinationLocation.lat()).toFixed(3)},{"\n"}
+                  {parseFloat(destinationLocation.lng()).toFixed(3)}
+                </Button>
+              </Label>
+            </Button>
+          </div>
+        </>
       )}
 
       {isLoaded && rideAccepted && (
@@ -257,7 +318,9 @@ const RequestRide = () => {
                 <div className="rounded-lg  bg-gray-200 p-1 mb-1">
                   Driver Location:
                 </div>
-                {rideAcceptedData.driverLan}, {rideAcceptedData.driverLon}
+                {driverAddress}
+                {"\n"}
+                {rideAcceptedData.driverLan},{"\n"} {rideAcceptedData.driverLon}
               </Button>
             </Label>
           </Button>
