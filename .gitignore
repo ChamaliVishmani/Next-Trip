@@ -9,6 +9,7 @@ flask_LocationModel/env
 flask_LocationModel/config
 flask_LocationModel/models
 flask_LocationModel/api/__pycache__
+flask_LocationModel/notebooks/notebookScripts
 
 Pipfile
 Pipfile.lock
