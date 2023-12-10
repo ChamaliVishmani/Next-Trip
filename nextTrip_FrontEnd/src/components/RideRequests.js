@@ -144,13 +144,6 @@ export default function RideRequests() {
               Insights Dashboard
             </button>
           </Link>
-          <button
-            id="accountTab"
-            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
-            onClick={() => selectTabHandle(tabs.account)}
-          >
-            Account
-          </button>
         </nav>
       </div>
       <div className="p-1 flex justify-center ">

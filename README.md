@@ -79,11 +79,14 @@ NextTrip
 │  ├─ instance
 │  ├─ models
 │  │  ├─ clusters
-│  │  │  ├─ cluster_0_model.pkl
-│  │  │  ├─ cluster_10_model.pkl
+│  │  │  ├─ cluster_0_lat_model.pkl
+│  │  │  ├─ cluster_0_lon_model.pkl
+│  │  │  ├─ cluster_10_lat_model.pkl
 │  │  │  ├─
-│  │  │  ├─ cluster_99_model.pkl
-│  │  │  └─ cluster_9_model.pkl
+│  │  │  ├─ cluster_99_lat_model.pkl
+│  │  │  ├─ cluster_99_lon_model.pkl
+│  │  │  ├─ cluster_9_lat_model.pkl
+│  │  │  └─ cluster_9_lon_model.pkl
 │  │  ├─ kmeans_model.pkl
 │  │  ├─ lat_model.pkl
 │  │  ├─ lon_model.pkl
