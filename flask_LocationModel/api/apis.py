@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import joblib
 import pandas as pd
 
-from . import latitude_model, logitude_model, heatmap_data_df, hourcount_data, daycount_data, dayHrcount_data, kmeans_model, socketio
+from . import latitude_model, logitude_model, hourcount_data, daycount_data, dayHrcount_data, kmeans_model, socketio, heatmap_data
 
 main = Blueprint('main', __name__)
 
@@ -39,15 +39,17 @@ def predict_location_close():
         lon = data['lon']
 
         new_cluster = kmeans_model.predict([[lat, lon]])[0]
-        predicted_model = joblib.load(
-            "./models/clusters/cluster_{}_model.pkl".format(new_cluster))
-        predicted_cluster = predicted_model.predict(
-            [[new_weekday, new_hour]])[0]
-        cluster_centroid = kmeans_model.cluster_centers_[predicted_cluster]
-        predicted_latitude, predicted_longitude = cluster_centroid[0], cluster_centroid[1]
+        predicted_lat_model = joblib.load(
+            "./models/clusters/cluster_{}_lat_model.pkl".format(new_cluster))
+        predicted_lon_model = joblib.load(
+            "./models/clusters/cluster_{}_lon_model.pkl".format(new_cluster))
 
-        response = {'predicted_lat': predicted_latitude,
-                    'predicted_lon': predicted_longitude}
+        new_X = pd.DataFrame({'weekday': [new_weekday], 'hour': [new_hour]})
+        predicted_lat = predicted_lat_model.predict(new_X)
+        predicted_lon = predicted_lon_model.predict(new_X)
+
+        response = {'predicted_lat': predicted_lat.tolist(
+        ), 'predicted_lon': predicted_lon.tolist()}
 
         return jsonify(response), 200
     except Exception as e:
@@ -65,8 +67,8 @@ def get_heatmap_data():
         new_weekday = data['weekday']
         new_hour = data['hour']
 
-        filtered_data = heatmap_data_df[(heatmap_data_df['weekday'] == new_weekday) & (
-            heatmap_data_df['hour'] == new_hour)]
+        filtered_data = heatmap_data[(
+            (heatmap_data['weekday'] == new_weekday) & (heatmap_data['hour'] == new_hour))]
 
         response = filtered_data[['Lat', 'Lon', 'weight']].to_dict(
             orient='records')

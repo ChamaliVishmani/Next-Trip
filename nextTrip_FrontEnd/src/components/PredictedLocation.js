@@ -55,7 +55,6 @@ export const PredictedLocation = () => {
     heatMap: "heatMap",
     todayInsights: "todayInsights",
     dataInsights: "dataInsights",
-    account: "account",
     driverMain: "driverMain",
     rideRequests: "rideRequests",
   };
@@ -105,13 +104,6 @@ export const PredictedLocation = () => {
               Insights Dashboard
             </button>
           </Link>
-          <button
-            id="accountTab"
-            class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none"
-            onClick={() => selectTabHandle(tabs.account)}
-          >
-            Account
-          </button>
         </nav>
       </div>
       <div class="bg-white rounded-lg mt-4 p-0">

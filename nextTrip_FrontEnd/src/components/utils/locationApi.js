@@ -1,15 +1,19 @@
 import axios from "axios";
 
-import { positionStackAPIKey } from "../../keys";
-
 export async function fetchAddress(lan, lon, setAddress) {
   try {
-    console.log("lan sent to address :", lan, "lon sent to address :", lon);
-    const apiUrl = `http://api.positionstack.com/v1/reverse?access_key=${positionStackAPIKey}&query=${lan},${lon}&limit=1`;
+    console.log(
+      "lan sent to address geocode :",
+      lan,
+      "lon sent to address :",
+      lon
+    );
+    const apiUrl = `https://geocode.maps.co/reverse?lat=${lan}&lon=${lon}`;
 
     const response = await axios.get(apiUrl);
-    if (response.data.data.length > 0) {
-      setAddress(response.data.data[0].label);
+    const address = response.data.display_name;
+    if (address) {
+      setAddress(address);
     } else {
       setAddress("Address not found");
     }
@@ -76,6 +80,11 @@ export function setHeatMapDataPointsFunc(
   setHeatMapDataPoints,
   setTopFiveLocations
 ) {
+  if (!window.google || !window.google.maps || !window.google.maps.LatLng) {
+    console.error("Google Maps API or LatLng constructor not available");
+    return;
+  }
+
   var heatMapDataPointsToSet = heatmapData.map(function (point) {
     const location = new window.google.maps.LatLng(point.Lat, point.Lon);
 
