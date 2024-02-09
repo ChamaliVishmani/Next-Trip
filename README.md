@@ -1,9 +1,39 @@
 # Next Trip
 
-A WEB APPLICATION FOR TAXI DRIVERS TO DETERMINE BEST LOCATIONS AND TIMES TO BE AVAILABLE
+- A web application which provides insight on times and locations a driver could get more rides based on past rides data
 
-# run backend
+  - Give driver a location where they are highly likely to get a ride 
+according to day and time and location of the driver.
+    - Processes the data and make a model to predict the rider location according to time using *RandomForestRegressor*
+      - Model Root-mean-square deviation
+        - Latitude RMSE: 0.035844013391631055
+        - Longitude RMSE: 0.05092007337037105
+    - Apply K-means clustering on the location data and train a *RandomForestRegressor* model for each cluster
+        - Average RMSE for latitude: 0.022379436806737547
+        - Average RMSE for longitude: 0.021696016348763895
+  - Give a heat map of rides to show how the demand spreads.
+  - Give insights of rider pickups by day and hour.
+  - Update the models and insights periodically with new rides.
 
+[Dataset used - Kaggle|Uber Pickups in New York City](https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city)
+
+
+## Used languages, platforms etc.
+
+- Python
+- Flask
+- MongoDB
+- ReactJS
+- REST APIs
+
+## Demo videos
+
+https://github.com/ChamaliVishmani/Next-Trip/assets/75886556/eb25f2c4-570f-4a22-bc7e-cf45c056c8d5
+
+https://github.com/ChamaliVishmani/Next-Trip/assets/75886556/f65b6bac-fe5d-4a67-8651-0f17b72c2a24
+
+## Run backend
+```
 (in a command prompt)
 
 cd flask_LocationModel
@@ -23,23 +53,28 @@ flask run
 Jupyter Kernel for Your Virtual Environment:
 python -m ipykernel install --user --name=jupyterenv_nexttrip
 
-# run frontend
+```
 
+## Run frontend
+
+```
 cd nextTrip_FrontEnd
 
 (npm install)
 
 npm start
 
-# start mongoDB server
+```
 
+## Start mongoDB server
+```
 cd mongoDB_Server
 
 (npm install)
 
 npm start
-
-# Project Tree
+```
+## Project Tree
 
 ```
 NextTrip
